@@ -1,0 +1,33 @@
+export default {
+  app: {
+    title: 'Система управления университетом',
+    shortTitle: 'СУУ',
+  },
+  nav: {
+    dashboard: 'Панель',
+    attendance: 'Посещаемость',
+    ratings: 'Рейтинги',
+    payments: 'Платежи',
+    faculties: 'Факультеты',
+  },
+  common: {
+    search: 'Поиск',
+    add: 'Добавить',
+    edit: 'Изменить',
+    delete: 'Удалить',
+    save: 'Сохранить',
+    cancel: 'Отмена',
+    confirm: 'Подтвердить',
+    actions: 'Действия',
+    loading: 'Загрузка…',
+    noData: 'Нет данных',
+    total: 'Всего',
+    name: 'Название',
+    status: 'Статус',
+    date: 'Дата',
+    all: 'Все',
+    lightMode: 'Светлая тема',
+    darkMode: 'Тёмная тема',
+    language: 'Язык',
+  },
+}

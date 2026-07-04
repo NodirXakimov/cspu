@@ -1,0 +1,33 @@
+export default {
+  app: {
+    title: 'University Management System',
+    shortTitle: 'UMS',
+  },
+  nav: {
+    dashboard: 'Dashboard',
+    attendance: 'Attendance',
+    ratings: 'Ratings',
+    payments: 'Payments',
+    faculties: 'Faculties',
+  },
+  common: {
+    search: 'Search',
+    add: 'Add',
+    edit: 'Edit',
+    delete: 'Delete',
+    save: 'Save',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    actions: 'Actions',
+    loading: 'Loading…',
+    noData: 'No data',
+    total: 'Total',
+    name: 'Name',
+    status: 'Status',
+    date: 'Date',
+    all: 'All',
+    lightMode: 'Light mode',
+    darkMode: 'Dark mode',
+    language: 'Language',
+  },
+}

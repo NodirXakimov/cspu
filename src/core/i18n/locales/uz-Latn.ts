@@ -1,0 +1,33 @@
+export default {
+  app: {
+    title: 'Universitetni boshqarish tizimi',
+    shortTitle: 'UBT',
+  },
+  nav: {
+    dashboard: 'Boshqaruv paneli',
+    attendance: 'Davomat',
+    ratings: 'Reytinglar',
+    payments: "To'lovlar",
+    faculties: 'Fakultetlar',
+  },
+  common: {
+    search: 'Qidirish',
+    add: "Qo'shish",
+    edit: 'Tahrirlash',
+    delete: "O'chirish",
+    save: 'Saqlash',
+    cancel: 'Bekor qilish',
+    confirm: 'Tasdiqlash',
+    actions: 'Amallar',
+    loading: 'Yuklanmoqda…',
+    noData: "Ma'lumot yo'q",
+    total: 'Jami',
+    name: 'Nomi',
+    status: 'Holati',
+    date: 'Sana',
+    all: 'Barchasi',
+    lightMode: 'Yorug‘ rejim',
+    darkMode: 'Tungi rejim',
+    language: 'Til',
+  },
+}

@@ -1,0 +1,33 @@
+export default {
+  app: {
+    title: 'Университетни бошқариш тизими',
+    shortTitle: 'УБТ',
+  },
+  nav: {
+    dashboard: 'Бошқарув панели',
+    attendance: 'Давомат',
+    ratings: 'Рейтинглар',
+    payments: 'Тўловлар',
+    faculties: 'Факультетлар',
+  },
+  common: {
+    search: 'Қидириш',
+    add: 'Қўшиш',
+    edit: 'Таҳрирлаш',
+    delete: 'Ўчириш',
+    save: 'Сақлаш',
+    cancel: 'Бекор қилиш',
+    confirm: 'Тасдиқлаш',
+    actions: 'Амаллар',
+    loading: 'Юкланмоқда…',
+    noData: 'Маълумот йўқ',
+    total: 'Жами',
+    name: 'Номи',
+    status: 'Ҳолати',
+    date: 'Сана',
+    all: 'Барчаси',
+    lightMode: 'Ёруғ режим',
+    darkMode: 'Тунги режим',
+    language: 'Тил',
+  },
+}
