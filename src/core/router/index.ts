@@ -4,19 +4,27 @@ import AppLayout from '@/core/components/AppLayout.vue'
 
 /**
  * Auto-collect each module's routes. A module's `index.ts` default-exports
- * `{ routes: RouteRecordRaw[] }`; they are nested under the shared AppLayout.
+ * `{ routes: RouteRecordRaw[]; rootRoutes?: RouteRecordRaw[] }`.
+ * - `routes` are nested under the shared AppLayout (sidebar + header).
+ * - `rootRoutes` are mounted at the top level (e.g. fullscreen pages with no chrome).
  */
 const moduleModules = import.meta.glob<{
-  default: { routes: RouteRecordRaw[] }
+  default: { routes: RouteRecordRaw[]; rootRoutes?: RouteRecordRaw[] }
 }>('../../modules/*/index.ts', { eager: true })
+
+const byNavOrder = (a: RouteRecordRaw, b: RouteRecordRaw) => {
+  const oa = (a.meta?.nav?.order as number) ?? 99
+  const ob = (b.meta?.nav?.order as number) ?? 99
+  return oa - ob
+}
 
 const moduleRoutes: RouteRecordRaw[] = Object.values(moduleModules)
   .flatMap((m) => m.default.routes)
-  .sort((a, b) => {
-    const oa = (a.meta?.nav?.order as number) ?? 99
-    const ob = (b.meta?.nav?.order as number) ?? 99
-    return oa - ob
-  })
+  .sort(byNavOrder)
+
+const rootRoutes: RouteRecordRaw[] = Object.values(moduleModules)
+  .flatMap((m) => m.default.rootRoutes ?? [])
+  .sort(byNavOrder)
 
 const routes: RouteRecordRaw[] = [
   {
@@ -25,6 +33,7 @@ const routes: RouteRecordRaw[] = [
     redirect: '/dashboard',
     children: moduleRoutes,
   },
+  ...rootRoutes,
   {
     path: '/:pathMatch(.*)*',
     redirect: '/dashboard',

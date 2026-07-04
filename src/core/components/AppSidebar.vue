@@ -18,13 +18,14 @@ const store = useAppStore()
 const { sidebarCollapsed } = storeToRefs(store)
 
 const navItems = computed<NavItem[]>(() => {
-  const layout = router.options.routes.find((r) => r.children?.length)
-  const children = layout?.children ?? []
-  return children
+  // getRoutes() is flattened with absolute paths, so it covers both layout
+  // children (/dashboard …) and top-level routes (/monitoring).
+  return router
+    .getRoutes()
     .filter((r) => r.meta?.nav)
     .map((r) => {
       const nav = r.meta!.nav as Omit<NavItem, 'path'>
-      return { path: `/${r.path}`.replace(/\/+/g, '/'), ...nav }
+      return { path: r.path, ...nav }
     })
     .sort((a, b) => a.order - b.order)
 })
