@@ -49,3 +49,18 @@ body {
     background-color 0.2s ease,
     color 0.2s ease;
 }
+
+/* ------------------------------------------------------------------ */
+/* Global card radius — all el-card / StatCard get a larger rounding  */
+/* ------------------------------------------------------------------ */
+.el-card {
+  --el-card-border-radius: 14px;
+  border-radius: 14px !important;
+}
+
+/* Dialogs share the same rounding as cards */
+.el-dialog {
+  --el-dialog-border-radius: 14px;
+  border-radius: 14px !important;
+}
+

@@ -123,6 +123,8 @@ onMounted(fetch)
       v-model="dialogVisible"
       :title="editingId === null ? $t('faculties.addFaculty') : $t('faculties.editFaculty')"
       width="480px"
+      align-center
+      append-to-body
     >
       <el-form :model="form" label-width="130px">
         <el-form-item :label="$t('faculties.code')">
