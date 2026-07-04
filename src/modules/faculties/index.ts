@@ -1,5 +1,5 @@
 import { markRaw } from 'vue'
-import { OfficeBuilding } from '@element-plus/icons-vue'
+import { Building2 } from 'lucide-vue-next'
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
     name: 'faculties',
     component: () => import('./views/FacultiesView.vue'),
     meta: {
-      nav: { titleKey: 'nav.faculties', icon: markRaw(OfficeBuilding), order: 5 },
+      nav: { titleKey: 'nav.faculties', icon: markRaw(Building2), order: 5 },
     },
   },
 ]

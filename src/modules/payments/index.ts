@@ -1,5 +1,5 @@
 import { markRaw } from 'vue'
-import { Wallet } from '@element-plus/icons-vue'
+import { CreditCard } from 'lucide-vue-next'
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
     name: 'payments',
     component: () => import('./views/PaymentsView.vue'),
     meta: {
-      nav: { titleKey: 'nav.payments', icon: markRaw(Wallet), order: 4 },
+      nav: { titleKey: 'nav.payments', icon: markRaw(CreditCard), order: 4 },
     },
   },
 ]

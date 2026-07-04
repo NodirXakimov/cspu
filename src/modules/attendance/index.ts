@@ -1,5 +1,5 @@
 import { markRaw } from 'vue'
-import { Camera } from '@element-plus/icons-vue'
+import { ScanFace } from 'lucide-vue-next'
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
     name: 'attendance',
     component: () => import('./views/AttendanceView.vue'),
     meta: {
-      nav: { titleKey: 'nav.attendance', icon: markRaw(Camera), order: 2 },
+      nav: { titleKey: 'nav.attendance', icon: markRaw(ScanFace), order: 2 },
     },
   },
 ]

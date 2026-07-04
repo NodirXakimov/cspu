@@ -1,5 +1,5 @@
 import { markRaw } from 'vue'
-import { Odometer } from '@element-plus/icons-vue'
+import { LayoutDashboard } from 'lucide-vue-next'
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
     name: 'dashboard',
     component: () => import('./views/DashboardView.vue'),
     meta: {
-      nav: { titleKey: 'nav.dashboard', icon: markRaw(Odometer), order: 1 },
+      nav: { titleKey: 'nav.dashboard', icon: markRaw(LayoutDashboard), order: 1 },
     },
   },
 ]

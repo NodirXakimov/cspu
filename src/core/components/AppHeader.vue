@@ -22,6 +22,16 @@ const pageTitleKey = computed(
     :height="'var(--app-header-height)'"
   >
     <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 pr-2">
+        <div
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand text-white font-bold"
+        >
+          U
+        </div>
+        <span class="hidden text-base font-semibold sm:inline">
+          {{ $t('app.shortTitle') }}
+        </span>
+      </div>
       <el-button circle text @click="store.toggleSidebar()">
         <el-icon :size="18">
           <Expand v-if="sidebarCollapsed" />

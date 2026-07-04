@@ -4,10 +4,10 @@ import AppHeader from '@/core/components/AppHeader.vue'
 </script>
 
 <template>
-  <el-container class="h-full">
-    <AppSidebar />
-    <el-container class="min-w-0">
-      <AppHeader />
+  <el-container class="h-full" direction="vertical">
+    <AppHeader />
+    <el-container class="min-h-0 flex-1">
+      <AppSidebar />
       <el-main class="app-main">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">

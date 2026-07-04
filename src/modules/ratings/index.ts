@@ -1,5 +1,5 @@
 import { markRaw } from 'vue'
-import { TrendCharts } from '@element-plus/icons-vue'
+import { Award } from 'lucide-vue-next'
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
     name: 'ratings',
     component: () => import('./views/RatingsView.vue'),
     meta: {
-      nav: { titleKey: 'nav.ratings', icon: markRaw(TrendCharts), order: 3 },
+      nav: { titleKey: 'nav.ratings', icon: markRaw(Award), order: 3 },
     },
   },
 ]
