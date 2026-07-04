@@ -45,6 +45,18 @@ export function formatDateTime(
   }).format(new Date(value))
 }
 
+/**
+ * Group a number with a thin space every 3 digits, e.g. 1234567 -> "1 234 567".
+ * Locale-agnostic (always a space) — used by the animated summary counters.
+ */
+export function formatSpaced(value: number, digits = 0): string {
+  const fixed = Math.abs(value).toFixed(digits)
+  const [int, frac] = fixed.split('.')
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  const sign = value < 0 ? '-' : ''
+  return frac ? `${sign}${grouped}.${frac}` : `${sign}${grouped}`
+}
+
 export function formatPercent(value: number, locale: LocaleKey = 'en'): string {
   return new Intl.NumberFormat(INTL_LOCALE[locale], {
     style: 'percent',

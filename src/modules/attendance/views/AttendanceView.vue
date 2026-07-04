@@ -7,7 +7,7 @@ import { CircleCheck, Clock, CircleClose } from '@element-plus/icons-vue'
 import BaseChart from '@/core/components/BaseChart.vue'
 import StatCard from '@/core/components/StatCard.vue'
 import { useAppStore } from '@/core/stores/app.store'
-import { formatDateTime, formatPercent } from '@/core/utils/format'
+import { formatDateTime } from '@/core/utils/format'
 import { useAttendance } from '../composables/useAttendance'
 import type { AttendanceStatus } from '../types/attendance.types'
 
@@ -50,25 +50,26 @@ onMounted(fetchAll)
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
         :label="$t('attendance.present')"
-        :value="summary?.present ?? '—'"
+        :value="summary?.present ?? null"
         :icon="CircleCheck"
         accent="#67c23a"
       />
       <StatCard
         :label="$t('attendance.late')"
-        :value="summary?.late ?? '—'"
+        :value="summary?.late ?? null"
         :icon="Clock"
         accent="#e6a23c"
       />
       <StatCard
         :label="$t('attendance.absent')"
-        :value="summary?.absent ?? '—'"
+        :value="summary?.absent ?? null"
         :icon="CircleClose"
         accent="#f56c6c"
       />
       <StatCard
         :label="$t('attendance.rate')"
-        :value="summary ? formatPercent(summary.rate, locale) : '—'"
+        :value="summary?.rate ?? null"
+        format="percent"
         accent="#409eff"
       />
     </div>

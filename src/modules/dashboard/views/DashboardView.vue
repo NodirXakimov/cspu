@@ -7,7 +7,7 @@ import { User, School, Checked, Money } from '@element-plus/icons-vue'
 import BaseChart from '@/core/components/BaseChart.vue'
 import StatCard from '@/core/components/StatCard.vue'
 import { useAppStore } from '@/core/stores/app.store'
-import { formatMoney, formatNumber, formatPercent } from '@/core/utils/format'
+import { formatMoney } from '@/core/utils/format'
 import { CHART_COLORS } from '@/core/utils/constants'
 import { useDashboard } from '../composables/useDashboard'
 
@@ -94,25 +94,27 @@ onMounted(fetch)
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
         :label="$t('dashboard.students')"
-        :value="overview ? formatNumber(overview.stats.students, locale) : '—'"
+        :value="overview?.stats.students ?? null"
         :icon="User"
         accent="#409eff"
       />
       <StatCard
         :label="$t('dashboard.faculties')"
-        :value="overview?.stats.faculties ?? '—'"
+        :value="overview?.stats.faculties ?? null"
         :icon="School"
         accent="#9b59b6"
       />
       <StatCard
         :label="$t('dashboard.attendanceRate')"
-        :value="overview ? formatPercent(overview.stats.attendanceRate, locale) : '—'"
+        :value="overview?.stats.attendanceRate ?? null"
+        format="percent"
         :icon="Checked"
         accent="#67c23a"
       />
       <StatCard
         :label="$t('dashboard.revenue')"
-        :value="overview ? formatMoney(overview.stats.revenue, locale) : '—'"
+        :value="overview?.stats.revenue ?? null"
+        format="money"
         :icon="Money"
         accent="#e6a23c"
       />

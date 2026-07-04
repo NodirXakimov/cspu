@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
 import { GraduationCap } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
-import { useAppStore } from '@/core/stores/app.store'
-import { formatNumber } from '@/core/utils/format'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
 import type { PerformanceBlock } from '../types/monitoring.types'
@@ -19,7 +16,6 @@ const props = defineProps<{
 const term = defineModel<PerformanceTerm>('term', { required: true })
 
 const { t } = useI18n()
-const { locale } = storeToRefs(useAppStore())
 
 const chartOption = computed<EChartsOption>(() => ({
   tooltip: { trigger: 'axis' },
@@ -50,17 +46,18 @@ const chartOption = computed<EChartsOption>(() => ({
     <div class="flex gap-3">
       <MonitorStat
         :label="t('monitoring.avgGpa')"
-        :value="data?.avgGpa ?? '—'"
+        :value="data?.avgGpa ?? null"
+        format="decimal"
         accent="#9b59b6"
       />
       <MonitorStat
         :label="t('monitoring.evaluated')"
-        :value="data ? formatNumber(data.evaluated, locale) : '—'"
+        :value="data?.evaluated ?? null"
         accent="#409eff"
       />
       <MonitorStat
         :label="t('monitoring.failed')"
-        :value="data ? formatNumber(data.failed, locale) : '—'"
+        :value="data?.failed ?? null"
         accent="#f56c6c"
       />
     </div>

@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
 import { CalendarCheck } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
-import { useAppStore } from '@/core/stores/app.store'
-import { formatNumber } from '@/core/utils/format'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
 import type { AttendanceBlock, AttendanceRange } from '../types/monitoring.types'
@@ -15,7 +12,6 @@ const props = defineProps<{ data: AttendanceBlock | null }>()
 const range = defineModel<AttendanceRange>('range', { required: true })
 
 const { t } = useI18n()
-const { locale } = storeToRefs(useAppStore())
 
 const ranges: AttendanceRange[] = ['week', 'month', 'semester']
 
@@ -52,12 +48,12 @@ const chartOption = computed<EChartsOption>(() => ({
     <div class="flex gap-3">
       <MonitorStat
         :label="t('monitoring.active')"
-        :value="data ? formatNumber(data.active, locale) : '—'"
+        :value="data?.active ?? null"
         accent="#409eff"
       />
       <MonitorStat
         :label="t('monitoring.todayAttendance')"
-        :value="data ? formatNumber(data.today, locale) : '—'"
+        :value="data?.today ?? null"
         accent="#67c23a"
       />
       <MonitorStat

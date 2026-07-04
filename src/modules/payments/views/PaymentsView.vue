@@ -82,19 +82,22 @@ onMounted(fetchAll)
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
       <StatCard
         :label="$t('payments.collected')"
-        :value="summary ? formatMoney(summary.collected, locale) : '—'"
+        :value="summary?.collected ?? null"
+        format="money"
         :icon="Money"
         accent="#67c23a"
       />
       <StatCard
         :label="$t('payments.pending')"
-        :value="summary ? formatMoney(summary.pending, locale) : '—'"
+        :value="summary?.pending ?? null"
+        format="money"
         :icon="Wallet"
         accent="#e6a23c"
       />
       <StatCard
         :label="$t('payments.overdue')"
-        :value="summary ? formatMoney(summary.overdue, locale) : '—'"
+        :value="summary?.overdue ?? null"
+        format="money"
         :icon="Warning"
         accent="#f56c6c"
       />

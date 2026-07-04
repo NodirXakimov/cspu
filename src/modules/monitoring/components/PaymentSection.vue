@@ -1,19 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
 import { CreditCard } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
-import { useAppStore } from '@/core/stores/app.store'
-import { formatNumber } from '@/core/utils/format'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
 import type { PaymentBlock } from '../types/monitoring.types'
 
 const props = defineProps<{ data: PaymentBlock | null }>()
 const { t } = useI18n()
-const { locale } = storeToRefs(useAppStore())
 
 const chartOption = computed<EChartsOption>(() => ({
   tooltip: { trigger: 'item' },
@@ -39,17 +35,17 @@ const chartOption = computed<EChartsOption>(() => ({
     <div class="flex gap-3">
       <MonitorStat
         :label="t('monitoring.totalStudents')"
-        :value="data ? formatNumber(data.totalStudents, locale) : '—'"
+        :value="data?.totalStudents ?? null"
         accent="#409eff"
       />
       <MonitorStat
         :label="t('monitoring.paid')"
-        :value="data ? formatNumber(data.paid, locale) : '—'"
+        :value="data?.paid ?? null"
         accent="#67c23a"
       />
       <MonitorStat
         :label="t('monitoring.notPaid')"
-        :value="data ? formatNumber(data.notPaid, locale) : '—'"
+        :value="data?.notPaid ?? null"
         accent="#f56c6c"
       />
     </div>
