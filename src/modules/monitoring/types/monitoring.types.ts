@@ -28,6 +28,10 @@ export interface PaymentBlock {
   totalStudents: number
   paid: number
   notPaid: number
+  /** Money (UZS). */
+  collectedAmount: number
+  outstandingAmount: number
+  totalAmount: number
 }
 
 /** ④ Academic performance. Selectable term (semester + year). */

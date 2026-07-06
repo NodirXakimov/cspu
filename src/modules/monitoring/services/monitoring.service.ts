@@ -122,7 +122,19 @@ export const monitoringService = {
     if (USE_MOCK) {
       const totalStudents = scaled(5970, faculty)
       const paid = Math.round(totalStudents * (0.78 + (Math.random() - 0.5) * 0.06))
-      return mockDelay({ totalStudents, paid, notPaid: totalStudents - paid })
+      const notPaid = totalStudents - paid
+      // ~13.2M so'm contract per student.
+      const perStudent = 13_200_000
+      const totalAmount = totalStudents * perStudent
+      const collectedAmount = paid * perStudent
+      return mockDelay({
+        totalStudents,
+        paid,
+        notPaid,
+        collectedAmount,
+        outstandingAmount: totalAmount - collectedAmount,
+        totalAmount,
+      })
     }
     const { data } = await http.get<PaymentBlock>('/monitoring/payments', {
       params: { faculty },

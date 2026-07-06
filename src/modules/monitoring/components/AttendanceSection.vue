@@ -27,7 +27,7 @@ function dayLabel(raw: string): string {
 
 const chartOption = computed<EChartsOption>(() => ({
   tooltip: { trigger: 'axis', valueFormatter: (v) => `${v}%` },
-  grid: { left: 36, right: 12, top: 12, bottom: 24 },
+  grid: { left: 36, right: 16, top: 30, bottom: 24 },
   xAxis: { type: 'category', data: props.data?.series.map((d) => dayLabel(d.label)) ?? [] },
   yAxis: { type: 'value', max: 100, axisLabel: { formatter: '{value}%' } },
   series: [
@@ -37,6 +37,14 @@ const chartOption = computed<EChartsOption>(() => ({
       areaStyle: { opacity: 0.15 },
       lineStyle: { width: 3 },
       itemStyle: { color: M.blue },
+      label: {
+        show: true,
+        position: 'top',
+        formatter: '{c}%',
+        fontSize: 13,
+        fontWeight: 700,
+        color: 'inherit',
+      },
       data: props.data?.series.map((d) => d.value) ?? [],
     },
   ],
