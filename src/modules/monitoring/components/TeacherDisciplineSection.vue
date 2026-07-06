@@ -42,7 +42,7 @@ function lateStyle(min: number) {
 
 const chartOption = computed<EChartsOption>(() => ({
   tooltip: { trigger: 'axis' },
-  grid: { left: 30, right: 12, top: 12, bottom: 24 },
+  grid: { left: 30, right: 12, top: 30, bottom: 24 },
   xAxis: {
     type: 'category',
     data: props.data?.weekly.map((d) => dayLabel(d.label)) ?? [],
@@ -53,6 +53,13 @@ const chartOption = computed<EChartsOption>(() => ({
       type: 'bar',
       barWidth: '55%',
       itemStyle: { color: M.rose, borderRadius: [4, 4, 0, 0] },
+      label: {
+        show: true,
+        position: 'top',
+        fontWeight: 700,
+        fontSize: 15,
+        color: 'inherit',
+      },
       data: props.data?.weekly.map((d) => d.value) ?? [],
     },
   ],

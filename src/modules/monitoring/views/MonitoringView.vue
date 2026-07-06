@@ -82,12 +82,14 @@ onUnmounted(() => {
     <header class="flex shrink-0 items-center justify-between gap-3">
       <!-- Global faculty filter (applies to all four cards) -->
       <div class="ctrl-pill faculty-filter">
-        <el-icon :size="18" class="faculty-filter__icon"><Building2 /></el-icon>
         <el-select
           v-model="faculty"
           size="large"
           class="faculty-filter__select"
         >
+          <template #prefix>
+            <el-icon :size="18" class="faculty-filter__icon"><Building2 /></el-icon>
+          </template>
           <el-option
             v-for="opt in facultySelectOptions"
             :key="opt.value"
@@ -149,24 +151,29 @@ onUnmounted(() => {
 }
 
 .faculty-filter {
-  gap: 8px;
-  padding: 0 8px 0 14px;
+  padding: 0;
+  overflow: hidden;
 }
 .faculty-filter__icon {
   color: var(--el-color-primary);
   flex-shrink: 0;
 }
 .faculty-filter__select {
-  width: 200px;
+  width: 220px;
 }
-/* Strip the inner select's own box so only the pill shows */
+/* Strip the inner select's own box; inner padding lives here so the popper
+   still aligns to the pill's left edge (wrapper box = pill box). */
 .faculty-filter__select :deep(.el-select__wrapper) {
   background: transparent;
   box-shadow: none !important;
   border: none;
-  padding: 0;
-  min-height: 32px;
+  padding: 0 12px;
+  min-height: 42px;
   font-weight: 600;
+}
+/* Space between the building icon and the selected text */
+.faculty-filter__select :deep(.el-select__prefix) {
+  margin-right: 10px;
 }
 
 .control-bar {
