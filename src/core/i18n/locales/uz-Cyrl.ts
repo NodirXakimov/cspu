@@ -1,7 +1,7 @@
 export default {
   app: {
     title: 'Университетни бошқариш тизими',
-    shortTitle: 'УБТ',
+    shortTitle: 'CSPU',
   },
   nav: {
     dashboard: 'Бошқарув панели',

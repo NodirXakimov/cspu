@@ -37,6 +37,7 @@ const activePath = computed(() => route.path)
   <el-aside
     :width="sidebarCollapsed ? 'var(--app-sidebar-collapsed-width)' : 'var(--app-sidebar-width)'"
     class="app-sidebar border-r border-[var(--el-border-color-light)] transition-all duration-200"
+    :class="{ 'is-collapsed': sidebarCollapsed }"
   >
     <el-menu
       :default-active="activePath"
@@ -101,6 +102,8 @@ const activePath = computed(() => route.path)
 .app-sidebar :deep(.el-menu-item .el-icon) {
   margin-right: 14px;
 }
+
+/* Collapsed-item centering lives in global index.css (.el-menu--collapse) */
 
 /* Lucide line icons: crisper stroke + slightly larger for a modern sidebar */
 .app-sidebar :deep(.el-menu-item .el-icon svg) {

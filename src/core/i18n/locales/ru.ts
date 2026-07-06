@@ -1,7 +1,7 @@
 export default {
   app: {
     title: 'Система управления университетом',
-    shortTitle: 'СУУ',
+    shortTitle: 'CSPU',
   },
   nav: {
     dashboard: 'Панель',

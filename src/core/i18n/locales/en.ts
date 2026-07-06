@@ -1,7 +1,7 @@
 export default {
   app: {
     title: 'University Management System',
-    shortTitle: 'UMS',
+    shortTitle: 'CSPU',
   },
   nav: {
     dashboard: 'Dashboard',
