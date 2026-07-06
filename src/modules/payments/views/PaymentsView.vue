@@ -4,11 +4,14 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
 import { Money, Wallet, Warning } from '@element-plus/icons-vue'
+import { LineChart, PieChart, Receipt } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import StatCard from '@/core/components/StatCard.vue'
+import SectionCard from '@/core/components/SectionCard.vue'
 import { useAppStore } from '@/core/stores/app.store'
 import { formatMoney, formatDate } from '@/core/utils/format'
 import { CHART_COLORS } from '@/core/utils/constants'
+import { BRIGHT } from '@/core/utils/palette'
 import { usePayments } from '../composables/usePayments'
 import type { PaymentCategory, PaymentStatus } from '../types/payments.types'
 
@@ -46,7 +49,7 @@ const monthlyOption = computed<EChartsOption>(() => ({
       smooth: true,
       areaStyle: { opacity: 0.2 },
       lineStyle: { width: 3 },
-      itemStyle: { color: '#67c23a' },
+      itemStyle: { color: BRIGHT.emerald },
       data: analytics.value?.monthly.map((d) => d.value) ?? [],
     },
   ],
@@ -88,37 +91,34 @@ onMounted(fetchAll)
         :value="summary?.collected ?? null"
         format="money"
         :icon="Money"
-        accent="#67c23a"
+        :accent="BRIGHT.emerald"
       />
       <StatCard
         :label="$t('payments.pending')"
         :value="summary?.pending ?? null"
         format="money"
         :icon="Wallet"
-        accent="#e6a23c"
+        :accent="BRIGHT.amber"
       />
       <StatCard
         :label="$t('payments.overdue')"
         :value="summary?.overdue ?? null"
         format="money"
         :icon="Warning"
-        accent="#f56c6c"
+        :accent="BRIGHT.rose"
       />
     </div>
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <el-card shadow="never" class="lg:col-span-2">
-        <template #header>{{ $t('payments.monthly') }}</template>
+      <SectionCard :icon="LineChart" :title="$t('payments.monthly')" class="lg:col-span-2">
         <BaseChart :option="monthlyOption" :loading="loading" />
-      </el-card>
-      <el-card shadow="never">
-        <template #header>{{ $t('payments.byCategory') }}</template>
+      </SectionCard>
+      <SectionCard :icon="PieChart" :title="$t('payments.byCategory')">
         <BaseChart :option="categoryOption" :loading="loading" />
-      </el-card>
+      </SectionCard>
     </div>
 
-    <el-card shadow="never">
-      <template #header>{{ $t('payments.title') }}</template>
+    <SectionCard :icon="Receipt" :title="$t('payments.title')">
       <el-table :data="payments" v-loading="loading" stripe style="width: 100%">
         <el-table-column prop="studentName" :label="$t('payments.student')" min-width="160" />
         <el-table-column prop="faculty" :label="$t('payments.faculty')" width="110" />
@@ -141,6 +141,6 @@ onMounted(fetchAll)
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
+    </SectionCard>
   </div>
 </template>

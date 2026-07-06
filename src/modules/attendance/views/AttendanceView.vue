@@ -4,10 +4,13 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
 import { CircleCheck, Clock, CircleClose } from '@element-plus/icons-vue'
+import { TrendingUp, ScanFace } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import StatCard from '@/core/components/StatCard.vue'
+import SectionCard from '@/core/components/SectionCard.vue'
 import { useAppStore } from '@/core/stores/app.store'
 import { formatDateTime } from '@/core/utils/format'
+import { BRIGHT } from '@/core/utils/palette'
 import { useAttendance } from '../composables/useAttendance'
 import type { AttendanceStatus } from '../types/attendance.types'
 
@@ -36,7 +39,7 @@ const trendOption = computed<EChartsOption>(() => ({
       smooth: true,
       areaStyle: { opacity: 0.15 },
       lineStyle: { width: 3 },
-      itemStyle: { color: '#409eff' },
+      itemStyle: { color: BRIGHT.blue },
       data: trend.value?.daily.map((d) => d.value) ?? [],
     },
   ],
@@ -52,35 +55,33 @@ onMounted(fetchAll)
         :label="$t('attendance.present')"
         :value="summary?.present ?? null"
         :icon="CircleCheck"
-        accent="#67c23a"
+        :accent="BRIGHT.emerald"
       />
       <StatCard
         :label="$t('attendance.late')"
         :value="summary?.late ?? null"
         :icon="Clock"
-        accent="#e6a23c"
+        :accent="BRIGHT.amber"
       />
       <StatCard
         :label="$t('attendance.absent')"
         :value="summary?.absent ?? null"
         :icon="CircleClose"
-        accent="#f56c6c"
+        :accent="BRIGHT.rose"
       />
       <StatCard
         :label="$t('attendance.rate')"
         :value="summary?.rate ?? null"
         format="percent"
-        accent="#409eff"
+        :accent="BRIGHT.blue"
       />
     </div>
 
-    <el-card shadow="never">
-      <template #header>{{ $t('attendance.trendTitle') }}</template>
+    <SectionCard :icon="TrendingUp" :title="$t('attendance.trendTitle')">
       <BaseChart :option="trendOption" :loading="loading" height="300px" />
-    </el-card>
+    </SectionCard>
 
-    <el-card shadow="never">
-      <template #header>{{ $t('attendance.title') }}</template>
+    <SectionCard :icon="ScanFace" :title="$t('attendance.title')">
       <el-table :data="records" v-loading="loading" stripe style="width: 100%">
         <el-table-column prop="studentId" label="ID" width="100" />
         <el-table-column prop="studentName" :label="$t('attendance.student')" min-width="160" />
@@ -97,6 +98,6 @@ onMounted(fetchAll)
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
+    </SectionCard>
   </div>
 </template>

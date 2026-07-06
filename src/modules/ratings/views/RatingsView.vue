@@ -2,8 +2,11 @@
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { EChartsOption } from 'echarts'
+import { BarChart3, Building2, Trophy } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
+import SectionCard from '@/core/components/SectionCard.vue'
 import { CHART_COLORS } from '@/core/utils/constants'
+import { BRIGHT } from '@/core/utils/palette'
 import { useRatings } from '../composables/useRatings'
 
 const { t } = useI18n()
@@ -22,7 +25,7 @@ const distributionOption = computed<EChartsOption>(() => ({
       name: t('ratings.distribution'),
       type: 'bar',
       barWidth: '55%',
-      itemStyle: { color: '#409eff', borderRadius: [6, 6, 0, 0] },
+      itemStyle: { color: BRIGHT.blue, borderRadius: [6, 6, 0, 0] },
       data: analytics.value?.distribution.map((d) => d.value) ?? [],
     },
   ],
@@ -57,18 +60,15 @@ onMounted(fetchAll)
 <template>
   <div class="space-y-4">
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <el-card shadow="never">
-        <template #header>{{ $t('ratings.distribution') }}</template>
+      <SectionCard :icon="BarChart3" :title="$t('ratings.distribution')">
         <BaseChart :option="distributionOption" :loading="loading" />
-      </el-card>
-      <el-card shadow="never">
-        <template #header>{{ $t('ratings.byFaculty') }}</template>
+      </SectionCard>
+      <SectionCard :icon="Building2" :title="$t('ratings.byFaculty')">
         <BaseChart :option="byFacultyOption" :loading="loading" />
-      </el-card>
+      </SectionCard>
     </div>
 
-    <el-card shadow="never">
-      <template #header>{{ $t('ratings.topStudents') }}</template>
+    <SectionCard :icon="Trophy" :title="$t('ratings.topStudents')">
       <el-table :data="students" v-loading="loading" stripe style="width: 100%">
         <el-table-column prop="rank" :label="$t('ratings.rank')" width="80">
           <template #default="{ row }">
@@ -95,6 +95,6 @@ onMounted(fetchAll)
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
+    </SectionCard>
   </div>
 </template>

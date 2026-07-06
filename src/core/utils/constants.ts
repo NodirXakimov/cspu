@@ -21,14 +21,14 @@ export const LOCALE_OPTIONS: LocaleOption[] = [
 
 export const DEFAULT_LOCALE: LocaleKey = 'uz-Latn'
 
-/** Shared chart palette (kept in sync with tailwind brand + EP primary). */
+/** Shared bright chart palette. */
 export const CHART_COLORS = [
-  '#409eff',
-  '#67c23a',
-  '#e6a23c',
-  '#f56c6c',
-  '#909399',
-  '#9b59b6',
-  '#1abc9c',
-  '#34495e',
+  '#3b82f6', // blue
+  '#10b981', // emerald
+  '#f59e0b', // amber
+  '#f43f5e', // rose
+  '#8b5cf6', // violet
+  '#06b6d4', // cyan
+  '#ec4899', // pink
+  '#64748b', // slate
 ]

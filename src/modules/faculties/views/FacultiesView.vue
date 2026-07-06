@@ -3,6 +3,8 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Edit, Delete, Search, OfficeBuilding } from '@element-plus/icons-vue'
+import { Building2 } from 'lucide-vue-next'
+import SectionCard from '@/core/components/SectionCard.vue'
 import { useFaculties } from '../composables/useFaculties'
 import type { Faculty, FacultyDraft } from '../types/faculties.types'
 
@@ -81,21 +83,23 @@ onMounted(fetch)
 
 <template>
   <div class="space-y-4">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <el-input
-        v-model="search"
-        :placeholder="$t('common.search')"
-        clearable
-        class="!w-64"
-      >
-        <template #prefix><el-icon><Search /></el-icon></template>
-      </el-input>
-      <el-button type="primary" @click="openCreate">
-        <el-icon class="mr-1"><Plus /></el-icon>{{ $t('faculties.addFaculty') }}
-      </el-button>
-    </div>
+    <SectionCard :icon="Building2" :title="$t('faculties.title')">
+      <template #actions>
+        <div class="flex items-center gap-3">
+          <el-input
+            v-model="search"
+            :placeholder="$t('common.search')"
+            clearable
+            class="!w-56"
+          >
+            <template #prefix><el-icon><Search /></el-icon></template>
+          </el-input>
+          <el-button type="primary" @click="openCreate">
+            <el-icon class="mr-1"><Plus /></el-icon>{{ $t('faculties.addFaculty') }}
+          </el-button>
+        </div>
+      </template>
 
-    <el-card shadow="never">
       <el-table :data="filtered" v-loading="loading" stripe style="width: 100%">
         <el-table-column prop="code" :label="$t('faculties.code')" width="90" />
         <el-table-column prop="name" :label="$t('common.name')" min-width="200">
@@ -117,7 +121,7 @@ onMounted(fetch)
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
+    </SectionCard>
 
     <el-dialog
       v-model="dialogVisible"

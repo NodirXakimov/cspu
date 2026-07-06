@@ -4,11 +4,14 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
 import { User, School, Checked, Money } from '@element-plus/icons-vue'
+import { Activity, PieChart, Building2, BarChart3 } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import StatCard from '@/core/components/StatCard.vue'
+import SectionCard from '@/core/components/SectionCard.vue'
 import { useAppStore } from '@/core/stores/app.store'
 import { formatMoney } from '@/core/utils/format'
 import { CHART_COLORS } from '@/core/utils/constants'
+import { BRIGHT } from '@/core/utils/palette'
 import { useDashboard } from '../composables/useDashboard'
 
 const { t } = useI18n()
@@ -29,7 +32,7 @@ const attendanceOption = computed<EChartsOption>(() => ({
       smooth: true,
       areaStyle: { opacity: 0.15 },
       lineStyle: { width: 3 },
-      itemStyle: { color: '#409eff' },
+      itemStyle: { color: BRIGHT.blue },
       data: overview.value?.attendanceTrend.map((d) => d.value) ?? [],
     },
   ],
@@ -83,7 +86,7 @@ const ratingsOption = computed<EChartsOption>(() => ({
     {
       type: 'bar',
       barWidth: '55%',
-      itemStyle: { color: '#9b59b6', borderRadius: [6, 6, 0, 0] },
+      itemStyle: { color: BRIGHT.violet, borderRadius: [6, 6, 0, 0] },
       data: overview.value?.ratingsDistribution.map((d) => d.value) ?? [],
     },
   ],
@@ -99,50 +102,46 @@ onMounted(fetch)
         :label="$t('dashboard.students')"
         :value="overview?.stats.students ?? null"
         :icon="User"
-        accent="#409eff"
+        :accent="BRIGHT.blue"
       />
       <StatCard
         :label="$t('dashboard.faculties')"
         :value="overview?.stats.faculties ?? null"
         :icon="School"
-        accent="#9b59b6"
+        :accent="BRIGHT.violet"
       />
       <StatCard
         :label="$t('dashboard.attendanceRate')"
         :value="overview?.stats.attendanceRate ?? null"
         format="percent"
         :icon="Checked"
-        accent="#67c23a"
+        :accent="BRIGHT.emerald"
       />
       <StatCard
         :label="$t('dashboard.revenue')"
         :value="overview?.stats.revenue ?? null"
         format="money"
         :icon="Money"
-        accent="#e6a23c"
+        :accent="BRIGHT.amber"
       />
     </div>
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <el-card shadow="never" class="lg:col-span-2">
-        <template #header>{{ $t('dashboard.attendanceTrend') }}</template>
+      <SectionCard :icon="Activity" :title="$t('dashboard.attendanceTrend')" class="lg:col-span-2">
         <BaseChart :option="attendanceOption" :loading="loading" height="300px" />
-      </el-card>
-      <el-card shadow="never">
-        <template #header>{{ $t('dashboard.paymentsByCategory') }}</template>
+      </SectionCard>
+      <SectionCard :icon="PieChart" :title="$t('dashboard.paymentsByCategory')">
         <BaseChart :option="paymentsOption" :loading="loading" height="300px" />
-      </el-card>
+      </SectionCard>
     </div>
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <el-card shadow="never">
-        <template #header>{{ $t('dashboard.facultyHeadcount') }}</template>
+      <SectionCard :icon="Building2" :title="$t('dashboard.facultyHeadcount')">
         <BaseChart :option="headcountOption" :loading="loading" />
-      </el-card>
-      <el-card shadow="never">
-        <template #header>{{ $t('dashboard.ratingsDistribution') }}</template>
+      </SectionCard>
+      <SectionCard :icon="BarChart3" :title="$t('dashboard.ratingsDistribution')">
         <BaseChart :option="ratingsOption" :loading="loading" />
-      </el-card>
+      </SectionCard>
     </div>
   </div>
 </template>
