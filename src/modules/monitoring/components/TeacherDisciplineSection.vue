@@ -78,11 +78,14 @@ const chartOption = computed<EChartsOption>(() => ({
 
     <!-- table + chart side by side -->
     <div class="flex min-h-0 flex-1 gap-3">
-      <div class="h-full min-h-0 flex-1 overflow-hidden">
+      <div
+        class="h-full min-h-0 flex-1 overflow-hidden rounded-lg border border-[var(--el-border-color)]"
+      >
         <el-table
           :data="data?.lateList ?? []"
           height="100%"
           class="late-table"
+          :style="{ '--th-color': isDark ? '#dbeafe' : '#1e40af' }"
         >
           <el-table-column prop="name" :label="t('monitoring.name')" min-width="110">
             <template #default="{ row }">
@@ -143,14 +146,11 @@ const chartOption = computed<EChartsOption>(() => ({
   padding: 8px 0;
 }
 
-/* Header text: primary dark blue */
+/* Header text: theme-aware (var set inline on the table) */
 .late-table :deep(.el-table__header th .cell) {
   font-size: 14px;
   font-weight: 700;
-  color: #1e40af;
-}
-:global(html.dark) .late-table :deep(.el-table__header th .cell) {
-  color: #93c5fd;
+  color: var(--th-color);
 }
 
 /* Teacher name (colour set inline, theme-aware) */

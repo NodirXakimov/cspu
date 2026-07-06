@@ -37,7 +37,7 @@ const chartOption = computed<EChartsOption>(() => ({
 <template>
   <MonitorSection :title="t('monitoring.performance')" :icon="Trophy" :accent="M.violet">
     <template #toolbar>
-      <el-radio-group v-model="term" size="small">
+      <el-radio-group v-model="term" size="small" class="term-seg">
         <el-radio-button v-for="tm in terms" :key="tm" :value="tm">
           {{ tm }}
         </el-radio-button>

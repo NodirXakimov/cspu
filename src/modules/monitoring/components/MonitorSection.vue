@@ -1,17 +1,23 @@
 <script setup lang="ts">
-import type { Component } from 'vue'
+import { computed, type Component } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useAppStore } from '@/core/stores/app.store'
 
 defineProps<{
   title: string
   icon?: Component
   accent?: string
 }>()
+
+const { theme } = storeToRefs(useAppStore())
+// Unified title+icon colour: dark blue on light, whitish blue on dark.
+const headColor = computed(() => (theme.value === 'dark' ? '#dbeafe' : '#1e40af'))
 </script>
 
 <template>
   <section class="monitor-section flex min-h-0 flex-col rounded-lg">
     <header class="flex items-center justify-between gap-2 px-4 py-2.5">
-      <div class="section-head flex items-center gap-2.5">
+      <div class="section-head flex items-center gap-2.5" :style="{ color: headColor }">
         <span v-if="icon" class="section-icon flex items-center justify-center">
           <el-icon :size="24"><component :is="icon" /></el-icon>
         </span>
@@ -43,13 +49,7 @@ defineProps<{
 .monitor-section header {
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
-/* Unified title + icon colour across all four sections (icon inherits currentColor) */
-.section-head {
-  color: #1e40af; /* dark blue — light mode */
-}
-:global(html.dark) .section-head {
-  color: #93c5fd; /* light blue — dark mode */
-}
+/* Title + icon colour set inline (theme-aware); icon inherits currentColor */
 .section-icon :deep(svg) {
   stroke-width: 2.25;
 }

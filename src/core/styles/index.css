@@ -64,3 +64,37 @@ body {
   border-radius: 14px !important;
 }
 
+/* ------------------------------------------------------------------ */
+/* Segmented pill radio-group (.term-seg) — used by monitoring toggles */
+/* ------------------------------------------------------------------ */
+.term-seg {
+  --seg: #2563eb; /* blue (active pill) */
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  border-radius: 9999px;
+}
+.term-seg .el-radio-button__inner {
+  border: none !important;
+  border-radius: 9999px !important;
+  box-shadow: none !important;
+  background: var(--el-bg-color);
+  padding: 8px 10px !important;
+  font-weight: 600;
+  color: var(--el-text-color-secondary);
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+.term-seg .el-radio-button__inner:hover {
+  color: var(--seg);
+}
+.term-seg .el-radio-button.is-active .el-radio-button__inner,
+.term-seg .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  background-color: var(--seg) !important;
+  color: #fff !important;
+  box-shadow: 0 3px 10px -3px var(--seg) !important;
+}
+

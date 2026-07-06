@@ -18,10 +18,17 @@ const ranges: AttendanceRange[] = ['week', 'month', 'semester']
 
 const deltaUp = computed(() => (props.data?.deltaPct ?? 0) >= 0)
 
+/** Localize weekday labels; non-day labels (W1, Sep…) pass through unchanged. */
+function dayLabel(raw: string): string {
+  const key = `monitoring.days.${raw.toLowerCase()}`
+  const translated = t(key)
+  return translated === key ? raw : translated
+}
+
 const chartOption = computed<EChartsOption>(() => ({
   tooltip: { trigger: 'axis', valueFormatter: (v) => `${v}%` },
   grid: { left: 36, right: 12, top: 12, bottom: 24 },
-  xAxis: { type: 'category', data: props.data?.series.map((d) => d.label) ?? [] },
+  xAxis: { type: 'category', data: props.data?.series.map((d) => dayLabel(d.label)) ?? [] },
   yAxis: { type: 'value', max: 100, axisLabel: { formatter: '{value}%' } },
   series: [
     {
@@ -39,7 +46,7 @@ const chartOption = computed<EChartsOption>(() => ({
 <template>
   <MonitorSection :title="t('monitoring.attendance')" :icon="CalendarCheck" :accent="M.blue">
     <template #toolbar>
-      <el-radio-group v-model="range" size="small">
+      <el-radio-group v-model="range" size="small" class="term-seg">
         <el-radio-button v-for="r in ranges" :key="r" :value="r">
           {{ t(`monitoring.${r}`) }}
         </el-radio-button>
