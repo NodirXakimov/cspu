@@ -11,21 +11,21 @@ defineProps<{
 <template>
   <section class="monitor-section flex min-h-0 flex-col rounded-2xl">
     <header class="flex items-center justify-between gap-2 px-5 py-3">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2.5">
         <span
           v-if="icon"
-          class="flex h-8 w-8 items-center justify-center rounded-lg text-white"
-          :style="{ backgroundColor: accent ?? 'var(--el-color-primary)' }"
+          class="section-icon flex items-center justify-center"
+          :style="{ color: accent ?? 'var(--el-color-primary)' }"
         >
-          <el-icon :size="18"><component :is="icon" /></el-icon>
+          <el-icon :size="24"><component :is="icon" /></el-icon>
         </span>
-        <h2 class="m-0 text-lg font-semibold">{{ title }}</h2>
+        <h2 class="m-0 text-lg font-bold uppercase tracking-wide">{{ title }}</h2>
       </div>
       <div class="shrink-0">
         <slot name="toolbar" />
       </div>
     </header>
-    <div class="flex min-h-0 flex-1 flex-col gap-3 px-5 pb-4">
+    <div class="flex min-h-0 flex-1 flex-col gap-3 px-5 py-4">
       <slot />
     </div>
   </section>
@@ -39,5 +39,8 @@ defineProps<{
 }
 .monitor-section header {
   border-bottom: 1px solid var(--el-border-color-lighter);
+}
+.section-icon :deep(svg) {
+  stroke-width: 2.25;
 }
 </style>

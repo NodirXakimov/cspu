@@ -12,8 +12,11 @@ import { CHART_COLORS } from '@/core/utils/constants'
 import { useDashboard } from '../composables/useDashboard'
 
 const { t } = useI18n()
-const { locale } = storeToRefs(useAppStore())
+const { locale, theme } = storeToRefs(useAppStore())
 const { overview, loading, fetch } = useDashboard()
+
+// ECharts (canvas) can't read CSS vars — resolve the slice gap to a real hex.
+const gap = computed(() => (theme.value === 'dark' ? '#1d1e1f' : '#ffffff'))
 
 const attendanceOption = computed<EChartsOption>(() => ({
   tooltip: { trigger: 'axis', valueFormatter: (v) => `${v}%` },
@@ -59,7 +62,7 @@ const paymentsOption = computed<EChartsOption>(() => ({
       type: 'pie',
       radius: ['45%', '70%'],
       center: ['50%', '45%'],
-      itemStyle: { borderRadius: 6, borderColor: 'var(--el-bg-color)', borderWidth: 2 },
+      itemStyle: { borderRadius: 8, borderColor: gap.value, borderWidth: 3 },
       label: { show: false },
       data:
         overview.value?.paymentsByCategory.map((d, i) => ({

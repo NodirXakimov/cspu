@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { EChartsOption } from 'echarts'
-import { CalendarCheck } from 'lucide-vue-next'
+import { CalendarCheck, Users, UserCheck, TrendingUp, TrendingDown } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
+import { M } from '../palette'
 import type { AttendanceBlock, AttendanceRange } from '../types/monitoring.types'
 
 const props = defineProps<{ data: AttendanceBlock | null }>()
@@ -28,7 +29,7 @@ const chartOption = computed<EChartsOption>(() => ({
       smooth: true,
       areaStyle: { opacity: 0.15 },
       lineStyle: { width: 3 },
-      itemStyle: { color: '#409eff' },
+      itemStyle: { color: M.blue },
       data: props.data?.series.map((d) => d.value) ?? [],
     },
   ],
@@ -36,7 +37,7 @@ const chartOption = computed<EChartsOption>(() => ({
 </script>
 
 <template>
-  <MonitorSection :title="t('monitoring.attendance')" :icon="CalendarCheck" accent="#409eff">
+  <MonitorSection :title="t('monitoring.attendance')" :icon="CalendarCheck" :accent="M.blue">
     <template #toolbar>
       <el-radio-group v-model="range" size="small">
         <el-radio-button v-for="r in ranges" :key="r" :value="r">
@@ -49,17 +50,20 @@ const chartOption = computed<EChartsOption>(() => ({
       <MonitorStat
         :label="t('monitoring.active')"
         :value="data?.active ?? null"
-        accent="#409eff"
+        :icon="Users"
+        :accent="M.blue"
       />
       <MonitorStat
         :label="t('monitoring.todayAttendance')"
         :value="data?.today ?? null"
-        accent="#67c23a"
+        :icon="UserCheck"
+        :accent="M.emerald"
       />
       <MonitorStat
         :label="t('monitoring.vsYesterday')"
         :value="data ? `${deltaUp ? '▲' : '▼'} ${Math.abs(data.deltaPct)}%` : '—'"
-        :accent="deltaUp ? '#67c23a' : '#f56c6c'"
+        :icon="deltaUp ? TrendingUp : TrendingDown"
+        :accent="deltaUp ? M.emerald : M.rose"
       />
     </div>
 

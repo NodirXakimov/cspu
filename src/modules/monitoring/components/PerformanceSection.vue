@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { EChartsOption } from 'echarts'
-import { GraduationCap } from 'lucide-vue-next'
+import { Trophy, Star, ClipboardCheck, CircleX } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
+import { M } from '../palette'
 import type { PerformanceBlock } from '../types/monitoring.types'
 import type { PerformanceTerm } from '../services/monitoring.service'
 
@@ -26,7 +27,7 @@ const chartOption = computed<EChartsOption>(() => ({
     {
       type: 'bar',
       barWidth: '55%',
-      itemStyle: { color: '#9b59b6', borderRadius: [4, 4, 0, 0] },
+      itemStyle: { color: M.violet, borderRadius: [4, 4, 0, 0] },
       data: props.data?.distribution.map((d) => d.value) ?? [],
     },
   ],
@@ -34,7 +35,7 @@ const chartOption = computed<EChartsOption>(() => ({
 </script>
 
 <template>
-  <MonitorSection :title="t('monitoring.performance')" :icon="GraduationCap" accent="#9b59b6">
+  <MonitorSection :title="t('monitoring.performance')" :icon="Trophy" :accent="M.violet">
     <template #toolbar>
       <el-radio-group v-model="term" size="small">
         <el-radio-button v-for="tm in terms" :key="tm" :value="tm">
@@ -48,17 +49,20 @@ const chartOption = computed<EChartsOption>(() => ({
         :label="t('monitoring.avgGpa')"
         :value="data?.avgGpa ?? null"
         format="decimal"
-        accent="#9b59b6"
+        :icon="Star"
+        :accent="M.violet"
       />
       <MonitorStat
         :label="t('monitoring.evaluated')"
         :value="data?.evaluated ?? null"
-        accent="#409eff"
+        :icon="ClipboardCheck"
+        :accent="M.blue"
       />
       <MonitorStat
         :label="t('monitoring.failed')"
         :value="data?.failed ?? null"
-        accent="#f56c6c"
+        :icon="CircleX"
+        :accent="M.rose"
       />
     </div>
 

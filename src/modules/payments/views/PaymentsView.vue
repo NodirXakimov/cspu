@@ -13,8 +13,11 @@ import { usePayments } from '../composables/usePayments'
 import type { PaymentCategory, PaymentStatus } from '../types/payments.types'
 
 const { t } = useI18n()
-const { locale } = storeToRefs(useAppStore())
+const { locale, theme } = storeToRefs(useAppStore())
 const { payments, summary, analytics, loading, fetchAll } = usePayments()
+
+// ECharts (canvas) can't read CSS vars — resolve the slice gap to a real hex.
+const gap = computed(() => (theme.value === 'dark' ? '#1d1e1f' : '#ffffff'))
 
 const statusMeta: Record<PaymentStatus, 'success' | 'warning' | 'danger'> = {
   paid: 'success',
@@ -62,7 +65,7 @@ const categoryOption = computed<EChartsOption>(() => ({
       radius: ['45%', '70%'],
       center: ['50%', '45%'],
       avoidLabelOverlap: true,
-      itemStyle: { borderRadius: 6, borderColor: 'var(--el-bg-color)', borderWidth: 2 },
+      itemStyle: { borderRadius: 8, borderColor: gap.value, borderWidth: 3 },
       label: { show: false },
       data:
         analytics.value?.byCategory.map((d, i) => ({

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type Component } from 'vue'
 import { useCountUp } from '@/core/composables/useCountUp'
 import { formatSpaced } from '@/core/utils/format'
 
@@ -9,6 +9,7 @@ const props = withDefaults(
     /** number → animated + space-grouped; string → shown as-is; null → "—". */
     value: number | string | null
     format?: 'number' | 'decimal' | 'percent'
+    icon?: Component
     accent?: string
     duration?: number
   }>(),
@@ -37,13 +38,18 @@ const text = computed(() => {
 
 <template>
   <div
-    class="monitor-stat flex flex-1 flex-col justify-center rounded-xl px-4 py-5"
-    :style="{ borderColor: accent }"
+    class="monitor-stat relative flex flex-1 flex-col justify-center gap-1.5 overflow-hidden rounded-xl px-4 py-5"
+    :style="{ '--accent': accent }"
   >
-    <span class="text-xs font-medium uppercase tracking-wide text-[var(--el-text-color-secondary)]">
+    <!-- faded watermark icon, right side -->
+    <el-icon v-if="icon" class="stat-watermark" :style="{ color: accent }">
+      <component :is="icon" />
+    </el-icon>
+
+    <span class="relative text-xs font-semibold uppercase tracking-wide text-[var(--el-text-color-secondary)]">
       {{ label }}
     </span>
-    <span class="mt-1 text-3xl font-bold leading-none tabular-nums" :style="{ color: accent }">
+    <span class="relative text-3xl font-extrabold leading-none tabular-nums" :style="{ color: accent }">
       {{ text }}
     </span>
     <slot />
@@ -52,8 +58,21 @@ const text = computed(() => {
 
 <style scoped>
 .monitor-stat {
-  background-color: var(--el-fill-color-light);
-  border-left: 4px solid;
+  background: color-mix(in srgb, var(--accent) 7%, var(--el-fill-color-light));
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  border-left: 4px solid var(--accent);
   min-width: 0;
+}
+.stat-watermark {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 64px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.stat-watermark :deep(svg) {
+  stroke-width: 2;
 }
 </style>

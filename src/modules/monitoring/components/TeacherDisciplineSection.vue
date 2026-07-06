@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { EChartsOption } from 'echarts'
-import { UserRoundX } from 'lucide-vue-next'
+import { ClipboardCheck, Users, Clock } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
+import { M } from '../palette'
 import type { TeacherDiscipline } from '../types/monitoring.types'
 
 const props = defineProps<{ data: TeacherDiscipline | null }>()
@@ -20,7 +21,7 @@ const chartOption = computed<EChartsOption>(() => ({
     {
       type: 'bar',
       barWidth: '55%',
-      itemStyle: { color: '#f56c6c', borderRadius: [4, 4, 0, 0] },
+      itemStyle: { color: M.rose, borderRadius: [4, 4, 0, 0] },
       data: props.data?.weekly.map((d) => d.value) ?? [],
     },
   ],
@@ -28,17 +29,19 @@ const chartOption = computed<EChartsOption>(() => ({
 </script>
 
 <template>
-  <MonitorSection :title="t('monitoring.teachers')" :icon="UserRoundX" accent="#f56c6c">
+  <MonitorSection :title="t('monitoring.teachers')" :icon="ClipboardCheck" :accent="M.amber">
     <div class="flex gap-3">
       <MonitorStat
         :label="t('monitoring.totalTeachers')"
         :value="data?.total ?? null"
-        accent="#409eff"
+        :icon="Users"
+        :accent="M.blue"
       />
       <MonitorStat
         :label="t('monitoring.lateToday')"
         :value="data?.lateToday ?? null"
-        accent="#f56c6c"
+        :icon="Clock"
+        :accent="M.rose"
       />
     </div>
 

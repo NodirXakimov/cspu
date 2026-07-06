@@ -23,15 +23,16 @@ const mergedOption = computed<EChartsOption>(() => ({
   ...props.option,
 }))
 
-const theme = computed(() => (isDark.value ? 'dark' : undefined))
+const theme = computed(() => (isDark.value ? 'dark' : 'light'))
 </script>
 
 <template>
   <VChart
+    :key="theme"
     class="w-full"
     :style="{ height }"
     :option="mergedOption"
-    :theme="theme"
+    :theme="isDark ? 'dark' : undefined"
     :loading="loading"
     autoresize
   />
