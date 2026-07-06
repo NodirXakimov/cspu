@@ -3,8 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
-import { Money, Wallet, Warning } from '@element-plus/icons-vue'
-import { LineChart, PieChart, Receipt } from 'lucide-vue-next'
+import { LineChart, PieChart, Receipt, Banknote, Wallet, TriangleAlert } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import StatCard from '@/core/components/StatCard.vue'
 import SectionCard from '@/core/components/SectionCard.vue'
@@ -90,7 +89,7 @@ onMounted(fetchAll)
         :label="$t('payments.collected')"
         :value="summary?.collected ?? null"
         format="money"
-        :icon="Money"
+        :icon="Banknote"
         :accent="BRIGHT.emerald"
       />
       <StatCard
@@ -104,7 +103,7 @@ onMounted(fetchAll)
         :label="$t('payments.overdue')"
         :value="summary?.overdue ?? null"
         format="money"
-        :icon="Warning"
+        :icon="TriangleAlert"
         :accent="BRIGHT.rose"
       />
     </div>

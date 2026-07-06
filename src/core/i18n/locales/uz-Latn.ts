@@ -1,7 +1,7 @@
 export default {
   app: {
     title: 'Universitetni boshqarish tizimi',
-    shortTitle: 'UBT',
+    shortTitle: 'CSPU',
   },
   nav: {
     dashboard: 'Boshqaruv paneli',

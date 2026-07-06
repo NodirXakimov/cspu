@@ -3,8 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
-import { CircleCheck, Clock, CircleClose } from '@element-plus/icons-vue'
-import { TrendingUp, ScanFace } from 'lucide-vue-next'
+import { TrendingUp, ScanFace, UserCheck, Clock, UserX, Percent } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import StatCard from '@/core/components/StatCard.vue'
 import SectionCard from '@/core/components/SectionCard.vue'
@@ -54,7 +53,7 @@ onMounted(fetchAll)
       <StatCard
         :label="$t('attendance.present')"
         :value="summary?.present ?? null"
-        :icon="CircleCheck"
+        :icon="UserCheck"
         :accent="BRIGHT.emerald"
       />
       <StatCard
@@ -66,13 +65,14 @@ onMounted(fetchAll)
       <StatCard
         :label="$t('attendance.absent')"
         :value="summary?.absent ?? null"
-        :icon="CircleClose"
+        :icon="UserX"
         :accent="BRIGHT.rose"
       />
       <StatCard
         :label="$t('attendance.rate')"
         :value="summary?.rate ?? null"
         format="percent"
+        :icon="Percent"
         :accent="BRIGHT.blue"
       />
     </div>

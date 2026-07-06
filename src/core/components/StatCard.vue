@@ -41,7 +41,10 @@ const formatted = computed(() => {
 </script>
 
 <template>
-  <div class="stat-card" :style="{ '--accent': accent }">
+  <div
+    class="stat-card relative flex flex-col justify-center gap-1.5 overflow-hidden rounded-xl px-5 py-5"
+    :style="{ '--accent': accent }"
+  >
     <!-- faded watermark icon, right side -->
     <el-icon v-if="icon" class="stat-watermark" :style="{ color: accent }">
       <component :is="icon" />
@@ -51,14 +54,14 @@ const formatted = computed(() => {
       {{ label }}
     </span>
     <span
-      class="relative mt-1.5 block text-3xl font-extrabold leading-none tabular-nums"
+      class="relative text-3xl font-extrabold leading-none tabular-nums"
       :style="{ color: accent }"
     >
       {{ formatted }}
     </span>
     <span
       v-if="trend !== undefined"
-      class="relative mt-1 block text-xs font-semibold"
+      class="relative text-xs font-semibold"
       :class="trend >= 0 ? 'text-green-500' : 'text-red-500'"
     >
       {{ trend >= 0 ? '▲' : '▼' }} {{ Math.abs(trend) }}%
@@ -68,32 +71,21 @@ const formatted = computed(() => {
 
 <style scoped>
 .stat-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  padding: 18px 20px;
-  background: color-mix(in srgb, var(--accent) 6%, var(--el-bg-color));
-  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--el-border-color-lighter));
+  background: var(--el-bg-color);
+  border: 1px solid color-mix(in srgb, var(--accent) 65%, transparent);
   border-left: 4px solid var(--accent);
-  box-shadow: 0 2px 8px -4px rgba(0, 0, 0, 0.15);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
-}
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.25);
+  min-width: 0;
 }
 .stat-watermark {
   position: absolute;
-  right: -8px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 84px;
-  opacity: 0.1;
+  font-size: 64px;
+  opacity: 0.5;
   pointer-events: none;
 }
 .stat-watermark :deep(svg) {
-  stroke-width: 1.75;
+  stroke-width: 2;
 }
 </style>

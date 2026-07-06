@@ -3,8 +3,15 @@ import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
-import { User, School, Checked, Money } from '@element-plus/icons-vue'
-import { Activity, PieChart, Building2, BarChart3 } from 'lucide-vue-next'
+import {
+  Activity,
+  PieChart,
+  Building2,
+  BarChart3,
+  Users,
+  CalendarCheck,
+  Wallet,
+} from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import StatCard from '@/core/components/StatCard.vue'
 import SectionCard from '@/core/components/SectionCard.vue'
@@ -101,27 +108,27 @@ onMounted(fetch)
       <StatCard
         :label="$t('dashboard.students')"
         :value="overview?.stats.students ?? null"
-        :icon="User"
+        :icon="Users"
         :accent="BRIGHT.blue"
       />
       <StatCard
         :label="$t('dashboard.faculties')"
         :value="overview?.stats.faculties ?? null"
-        :icon="School"
+        :icon="Building2"
         :accent="BRIGHT.violet"
       />
       <StatCard
         :label="$t('dashboard.attendanceRate')"
         :value="overview?.stats.attendanceRate ?? null"
         format="percent"
-        :icon="Checked"
+        :icon="CalendarCheck"
         :accent="BRIGHT.emerald"
       />
       <StatCard
         :label="$t('dashboard.revenue')"
         :value="overview?.stats.revenue ?? null"
         format="money"
-        :icon="Money"
+        :icon="Wallet"
         :accent="BRIGHT.amber"
       />
     </div>
