@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { X, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { X, Building2, Maximize, Minimize } from 'lucide-vue-next'
 import ThemeToggle from '@/core/components/ThemeToggle.vue'
 import LangSwitcher from '@/core/components/LangSwitcher.vue'
 import { useAppStore } from '@/core/stores/app.store'
@@ -23,10 +23,19 @@ const {
   payments,
   performance,
   lastUpdated,
+  faculty,
+  facultyOptions,
   range,
   term,
   terms,
 } = useMonitoring()
+
+// Fill the 'all' option's label from i18n; keep faculty names as-is.
+const facultySelectOptions = computed(() =>
+  facultyOptions.value.map((o) =>
+    o.value === 'all' ? { ...o, label: t('monitoring.allFaculties') } : o,
+  ),
+)
 
 const INTL: Record<string, string> = {
   en: 'en-US',
@@ -43,49 +52,78 @@ const updatedLabel = computed(() =>
 function exit() {
   router.push('/dashboard')
 }
-const dockOpen = ref(false)
+
+// Fullscreen
+const isFullscreen = ref(false)
+function toggleFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen?.()
+  else document.exitFullscreen?.()
+}
+function onFsChange() {
+  isFullscreen.value = !!document.fullscreenElement
+}
 
 function onKey(e: KeyboardEvent) {
-  if (e.key === 'Escape') {
-    if (dockOpen.value) dockOpen.value = false
-    else exit()
-  }
+  if (e.key === 'Escape' && !document.fullscreenElement) exit()
 }
-onMounted(() => window.addEventListener('keydown', onKey))
-onUnmounted(() => window.removeEventListener('keydown', onKey))
+onMounted(() => {
+  window.addEventListener('keydown', onKey)
+  document.addEventListener('fullscreenchange', onFsChange)
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKey)
+  document.removeEventListener('fullscreenchange', onFsChange)
+})
 </script>
 
 <template>
-  <div class="monitoring-page h-screen w-screen overflow-hidden p-3">
-    <!-- Slide-in control dock (top-right) -->
-    <div class="control-dock" :class="{ 'is-open': dockOpen }">
-      <button
-        class="dock-tab"
-        :aria-label="dockOpen ? 'Hide' : 'Show'"
-        @click="dockOpen = !dockOpen"
-      >
-        <el-icon :size="18">
-          <ChevronRight v-if="dockOpen" />
-          <ChevronLeft v-else />
-        </el-icon>
-      </button>
+  <div class="monitoring-page flex h-screen w-screen flex-col gap-3 overflow-hidden p-3">
+    <!-- Top control row (above all cards) -->
+    <header class="flex shrink-0 items-center justify-between gap-3">
+      <!-- Global faculty filter (applies to all four cards) -->
+      <div class="ctrl-pill faculty-filter">
+        <el-icon :size="18" class="faculty-filter__icon"><Building2 /></el-icon>
+        <el-select
+          v-model="faculty"
+          size="large"
+          class="faculty-filter__select"
+        >
+          <el-option
+            v-for="opt in facultySelectOptions"
+            :key="opt.value"
+            :value="opt.value"
+            :label="opt.label"
+          />
+        </el-select>
+      </div>
 
-      <span class="flex items-center gap-2 pl-1 pr-1 text-xs font-medium text-[var(--el-text-color-secondary)]">
-        <span class="live-dot" />
-        {{ t('monitoring.updated') }} {{ updatedLabel }}
-      </span>
-      <span class="cluster-divider" />
-      <LangSwitcher />
-      <ThemeToggle />
-      <el-tooltip :content="t('monitoring.exit')" placement="bottom">
-        <el-button circle text @click="exit">
-          <el-icon :size="18"><X /></el-icon>
-        </el-button>
-      </el-tooltip>
-    </div>
+      <!-- Controls -->
+      <div class="ctrl-pill control-bar">
+        <span class="flex items-center gap-2 pl-1 pr-1 text-xs font-medium text-[var(--el-text-color-secondary)]">
+          <span class="live-dot" />
+          {{ t('monitoring.updated') }} {{ updatedLabel }}
+        </span>
+        <span class="cluster-divider" />
+        <LangSwitcher />
+        <ThemeToggle />
+        <el-tooltip :content="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'" placement="bottom">
+          <button class="ctrl-btn" @click="toggleFullscreen">
+            <el-icon :size="18">
+              <Minimize v-if="isFullscreen" />
+              <Maximize v-else />
+            </el-icon>
+          </button>
+        </el-tooltip>
+        <el-tooltip :content="t('monitoring.exit')" placement="bottom">
+          <button class="ctrl-btn" @click="exit">
+            <el-icon :size="18"><X /></el-icon>
+          </button>
+        </el-tooltip>
+      </div>
+    </header>
 
     <!-- 2×2 sections -->
-    <div class="grid h-full w-full grid-cols-2 grid-rows-2 gap-3">
+    <div class="grid min-h-0 w-full flex-1 grid-cols-2 grid-rows-2 gap-3">
       <TeacherDisciplineSection :data="teacher" />
       <AttendanceSection :data="attendance" v-model:range="range" />
       <PaymentSection :data="payments" />
@@ -99,47 +137,58 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   background-color: var(--el-bg-color-page);
 }
 
-/* Slide-in control dock — anchored to the right edge, peeks a tab when closed */
-.control-dock {
-  position: fixed;
-  top: 12px;
-  right: 0;
-  z-index: 50;
+/* Shared pill container for the top-row controls */
+.ctrl-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px 6px 4px;
-  border-radius: 14px 0 0 14px;
-  background: color-mix(in srgb, var(--el-bg-color) 82%, transparent);
-  backdrop-filter: blur(12px);
+  height: 44px;
+  border-radius: 12px;
+  background: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
-  border-right: none;
-  box-shadow:
-    0 10px 30px -12px rgba(0, 0, 0, 0.35),
-    0 2px 6px -2px rgba(0, 0, 0, 0.15);
-  transform: translateX(calc(100% - 40px));
-  transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px -3px rgba(0, 0, 0, 0.2);
 }
-.control-dock.is-open {
-  transform: translateX(0);
+
+.faculty-filter {
+  gap: 8px;
+  padding: 0 8px 0 14px;
 }
-.dock-tab {
-  display: flex;
+.faculty-filter__icon {
+  color: var(--el-color-primary);
+  flex-shrink: 0;
+}
+.faculty-filter__select {
+  width: 200px;
+}
+/* Strip the inner select's own box so only the pill shows */
+.faculty-filter__select :deep(.el-select__wrapper) {
+  background: transparent;
+  box-shadow: none !important;
+  border: none;
+  padding: 0;
+  min-height: 32px;
+  font-weight: 600;
+}
+
+.control-bar {
+  gap: 6px;
+  padding: 0 8px;
+}
+.ctrl-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
+  width: 34px;
   height: 34px;
-  flex-shrink: 0;
   border: none;
-  border-radius: 9px;
-  background: var(--el-fill-color-light);
-  color: var(--el-text-color-secondary);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--el-text-color-regular);
   cursor: pointer;
   transition:
     background-color 0.18s ease,
     color 0.18s ease;
 }
-.dock-tab:hover {
+.ctrl-btn:hover {
   background: var(--el-fill-color);
   color: var(--el-color-primary);
 }

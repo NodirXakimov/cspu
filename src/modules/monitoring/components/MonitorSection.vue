@@ -16,7 +16,7 @@ const headColor = computed(() => (theme.value === 'dark' ? '#dbeafe' : '#1e40af'
 
 <template>
   <section class="monitor-section flex min-h-0 flex-col rounded-lg">
-    <header class="flex items-center justify-between gap-2 px-4 py-2.5">
+    <header class="flex h-[50px] shrink-0 items-center justify-between gap-2 px-4">
       <div class="section-head flex items-center gap-2.5" :style="{ color: headColor }">
         <span v-if="icon" class="section-icon flex items-center justify-center">
           <el-icon :size="24"><component :is="icon" /></el-icon>

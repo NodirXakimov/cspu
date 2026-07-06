@@ -30,6 +30,7 @@ export default {
       ratings: 'Ratings distribution',
       updated: 'Updated',
       exit: 'Exit',
+      allFaculties: 'All faculties',
     },
   },
   ru: {
@@ -63,6 +64,7 @@ export default {
       ratings: 'Распределение рейтингов',
       updated: 'Обновлено',
       exit: 'Выход',
+      allFaculties: 'Все факультеты',
     },
   },
   'uz-Latn': {
@@ -96,6 +98,7 @@ export default {
       ratings: 'Reyting taqsimoti',
       updated: 'Yangilandi',
       exit: 'Chiqish',
+      allFaculties: 'Barcha fakultetlar',
     },
   },
   'uz-Cyrl': {
@@ -129,6 +132,7 @@ export default {
       ratings: 'Рейтинг тақсимоти',
       updated: 'Янгиланди',
       exit: 'Чиқиш',
+      allFaculties: 'Барча факультетлар',
     },
   },
 }
