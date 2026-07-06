@@ -16,6 +16,31 @@ html.dark {
   color-scheme: dark;
 }
 
+/* ------------------------------------------------------------------ */
+/* Global brand primary — override Element Plus default (#409eff)      */
+/* with a deeper blue across the whole app (light + dark ramps).       */
+/* ------------------------------------------------------------------ */
+:root {
+  --brand-primary: #2563eb;
+  --el-color-primary: var(--brand-primary) !important;
+  --el-color-primary-light-3: color-mix(in srgb, var(--brand-primary) 70%, #fff) !important;
+  --el-color-primary-light-5: color-mix(in srgb, var(--brand-primary) 50%, #fff) !important;
+  --el-color-primary-light-7: color-mix(in srgb, var(--brand-primary) 30%, #fff) !important;
+  --el-color-primary-light-8: color-mix(in srgb, var(--brand-primary) 20%, #fff) !important;
+  --el-color-primary-light-9: color-mix(in srgb, var(--brand-primary) 10%, #fff) !important;
+  --el-color-primary-dark-2: color-mix(in srgb, var(--brand-primary) 80%, #000) !important;
+}
+
+html.dark {
+  --el-color-primary: var(--brand-primary) !important;
+  --el-color-primary-light-3: color-mix(in srgb, var(--brand-primary) 70%, #000) !important;
+  --el-color-primary-light-5: color-mix(in srgb, var(--brand-primary) 50%, #000) !important;
+  --el-color-primary-light-7: color-mix(in srgb, var(--brand-primary) 30%, #000) !important;
+  --el-color-primary-light-8: color-mix(in srgb, var(--brand-primary) 20%, #000) !important;
+  --el-color-primary-light-9: color-mix(in srgb, var(--brand-primary) 10%, #000) !important;
+  --el-color-primary-dark-2: color-mix(in srgb, var(--brand-primary) 80%, #fff) !important;
+}
+
 html,
 body,
 #app {
@@ -68,7 +93,7 @@ body {
 /* Segmented pill radio-group (.term-seg) — used by monitoring toggles */
 /* ------------------------------------------------------------------ */
 .term-seg {
-  --seg: #2563eb; /* blue (active pill) */
+  --seg: var(--el-color-primary); /* global brand blue */
   display: inline-flex;
   gap: 4px;
   padding: 4px 6px;
