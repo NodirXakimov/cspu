@@ -51,7 +51,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 </script>
 
 <template>
-  <div class="monitoring-page h-screen w-screen overflow-hidden p-4">
+  <div class="monitoring-page h-screen w-screen overflow-hidden p-3">
     <!-- Floating control cluster -->
     <div
       class="fixed right-4 top-4 z-50 flex items-center gap-1 rounded-full border border-[var(--el-border-color-light)] bg-[var(--el-bg-color)] px-2 py-1 shadow-lg"
@@ -69,7 +69,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
     </div>
 
     <!-- 2×2 sections -->
-    <div class="grid h-full w-full grid-cols-2 grid-rows-2 gap-4">
+    <div class="grid h-full w-full grid-cols-2 grid-rows-2 gap-3">
       <TeacherDisciplineSection :data="teacher" />
       <AttendanceSection :data="attendance" v-model:range="range" />
       <PaymentSection :data="payments" />

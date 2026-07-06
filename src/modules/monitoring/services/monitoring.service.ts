@@ -31,11 +31,15 @@ export const monitoringService = {
       return mockDelay({
         total: 461,
         lateToday,
-        lateList: names.slice(0, lateToday).map(([name, faculty], i) => ({
-          name,
-          faculty,
-          time: `08:${(12 + i * 3).toString().padStart(2, '0')}`,
-        })),
+        lateList: names.slice(0, lateToday).map(([name, faculty], i) => {
+          const lateMin = 6 + i * 4
+          return {
+            name,
+            faculty,
+            time: `08:${(lateMin).toString().padStart(2, '0')}`,
+            lateMin,
+          }
+        }),
         weekly: [
           { label: 'Mon', value: jitter(7) },
           { label: 'Tue', value: jitter(5) },

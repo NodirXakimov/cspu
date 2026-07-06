@@ -27,7 +27,14 @@ const chartOption = computed<EChartsOption>(() => ({
       radius: ['40%', '78%'],
       center: ['50%', '42%'],
       itemStyle: { borderRadius: 10, borderColor: gap.value, borderWidth: 4 },
-      label: { show: false },
+      label: {
+        show: true,
+        position: 'inside',
+        formatter: '{d}%',
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 700,
+      },
       emphasis: { scale: true, scaleSize: 6 },
       data: [
         { name: t('monitoring.paid'), value: props.data?.paid ?? 0, itemStyle: { color: M.emerald } },

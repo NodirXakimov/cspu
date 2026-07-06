@@ -5,6 +5,7 @@ export interface LateTeacher {
   name: string
   faculty: string
   time: string // HH:mm
+  lateMin: number // minutes late
 }
 export interface TeacherDiscipline {
   total: number
