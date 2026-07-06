@@ -2,12 +2,18 @@ import { http, USE_MOCK, mockDelay } from '@/core/api/client'
 import type { Faculty, FacultyDraft } from '../types/faculties.types'
 
 const MOCK_FACULTIES: Faculty[] = [
-  { id: 1, code: 'INF', name: 'Information Technologies', dean: 'A. Karimov', studentsCount: 1240, staffCount: 86, established: 2001 },
-  { id: 2, code: 'ECO', name: 'Economics', dean: 'D. Yusupova', studentsCount: 980, staffCount: 64, established: 1995 },
-  { id: 3, code: 'ENG', name: 'Engineering', dean: 'S. Rahimov', studentsCount: 1520, staffCount: 102, established: 1992 },
-  { id: 4, code: 'MED', name: 'Medicine', dean: 'N. Tosheva', studentsCount: 870, staffCount: 120, established: 1998 },
-  { id: 5, code: 'LAW', name: 'Law', dean: 'B. Aliyev', studentsCount: 640, staffCount: 48, established: 2004 },
-  { id: 6, code: 'PHL', name: 'Philology', dean: 'M. Ismoilova', studentsCount: 720, staffCount: 55, established: 1990 },
+  { id: 1, code: 'PED', name: 'Pedagogika', dean: 'A. Karimov', studentsCount: 720, staffCount: 68, established: 1974 },
+  { id: 2, code: 'MTA', name: "Maktabgacha ta'lim", dean: 'D. Yusupova', studentsCount: 360, staffCount: 34, established: 1998 },
+  { id: 3, code: 'BTA', name: "Boshlang'ich ta'lim", dean: 'S. Rahimov', studentsCount: 480, staffCount: 44, established: 1992 },
+  { id: 4, code: 'TSG', name: "Tasviriy san'at va muhandislik grafikasi", dean: 'N. Tosheva', studentsCount: 300, staffCount: 30, established: 1995 },
+  { id: 5, code: 'JM', name: 'Jismoniy madaniyat', dean: 'B. Aliyev', studentsCount: 420, staffCount: 38, established: 1986 },
+  { id: 6, code: 'MXP', name: 'Maxsus pedagogika', dean: 'M. Ismoilova', studentsCount: 300, staffCount: 28, established: 2001 },
+  { id: 7, code: 'MUS', name: "Musiqa ta'limi", dean: 'O. Nazarov', studentsCount: 300, staffCount: 32, established: 1990 },
+  { id: 8, code: 'FIL', name: 'Filologiya', dean: 'K. Saidova', studentsCount: 600, staffCount: 58, established: 1974 },
+  { id: 9, code: 'TAR', name: 'Tarix', dean: 'R. Qodirov', studentsCount: 540, staffCount: 46, established: 1980 },
+  { id: 10, code: 'TAB', name: 'Tabiiy fanlar', dean: 'G. Ergasheva', studentsCount: 540, staffCount: 52, established: 1985 },
+  { id: 11, code: 'MAT', name: 'Matematika va informatika', dean: 'J. Toshev', studentsCount: 720, staffCount: 64, established: 1974 },
+  { id: 12, code: 'TUR', name: 'Turizm', dean: 'S. Rustamov', studentsCount: 720, staffCount: 50, established: 2010 },
 ]
 
 export const facultiesService = {

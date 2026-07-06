@@ -30,11 +30,14 @@ const {
   terms,
 } = useMonitoring()
 
-// Fill the 'all' option's label from i18n; keep faculty names as-is.
+// Translate each option: 'all' + per-faculty names (fallback to the raw name).
 const facultySelectOptions = computed(() =>
-  facultyOptions.value.map((o) =>
-    o.value === 'all' ? { ...o, label: t('monitoring.allFaculties') } : o,
-  ),
+  facultyOptions.value.map((o) => {
+    if (o.value === 'all') return { ...o, label: t('monitoring.allFaculties') }
+    const key = `faculties.names.${o.value}`
+    const translated = t(key)
+    return { ...o, label: translated === key ? o.label : translated }
+  }),
 )
 
 const INTL: Record<string, string> = {

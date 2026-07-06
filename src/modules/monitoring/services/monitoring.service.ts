@@ -20,12 +20,18 @@ export const ALL_FACULTIES = 'all'
 
 /** Each faculty's share of the total (used to scale mock counts when filtered). */
 const FACULTY_SHARE: Record<string, number> = {
-  INF: 0.21,
-  ECO: 0.16,
-  ENG: 0.25,
-  MED: 0.15,
-  LAW: 0.11,
-  PHL: 0.12,
+  PED: 0.12,
+  MTA: 0.06,
+  BTA: 0.08,
+  TSG: 0.05,
+  JM: 0.07,
+  MXP: 0.05,
+  MUS: 0.05,
+  FIL: 0.1,
+  TAR: 0.09,
+  TAB: 0.09,
+  MAT: 0.12,
+  TUR: 0.12,
 }
 
 function share(faculty: string): number {
@@ -47,9 +53,9 @@ export const monitoringService = {
       const s = share(faculty)
       const lateToday = Math.max(1, Math.round(jitter(9, 4) * s))
       const names: string[][] = [
-        ['A. Karimov', 'INF'], ['D. Yusupova', 'ECO'], ['S. Rahimov', 'ENG'],
-        ['N. Tosheva', 'MED'], ['B. Aliyev', 'LAW'], ['M. Ismoilova', 'PHL'],
-        ['O. Nazarov', 'INF'], ['K. Saidova', 'MED'],
+        ['A. Karimov', 'PED'], ['D. Yusupova', 'MTA'], ['S. Rahimov', 'BTA'],
+        ['N. Tosheva', 'TSG'], ['B. Aliyev', 'JM'], ['M. Ismoilova', 'FIL'],
+        ['O. Nazarov', 'MUS'], ['K. Saidova', 'MAT'],
       ]
       // When a faculty is selected, show only its teachers (re-tag if none match).
       let pool = names

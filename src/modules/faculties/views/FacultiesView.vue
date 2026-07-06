@@ -11,6 +11,13 @@ import type { Faculty, FacultyDraft } from '../types/faculties.types'
 const { t } = useI18n()
 const { items, loading, fetch, create, update, remove } = useFaculties()
 
+/** Localized faculty name (fallback to the stored name). */
+function facultyName(row: Faculty): string {
+  const key = `faculties.names.${row.code}`
+  const translated = t(key)
+  return translated === key ? row.name : translated
+}
+
 const search = ref('')
 const filtered = computed(() => {
   const q = search.value.trim().toLowerCase()
@@ -106,7 +113,7 @@ onMounted(fetch)
           <template #default="{ row }">
             <div class="flex items-center gap-2">
               <el-icon class="text-[var(--el-color-primary)]"><OfficeBuilding /></el-icon>
-              <span>{{ row.name }}</span>
+              <span>{{ facultyName(row as Faculty) }}</span>
             </div>
           </template>
         </el-table-column>
