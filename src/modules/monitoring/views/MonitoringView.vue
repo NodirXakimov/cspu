@@ -14,7 +14,7 @@ import PaymentSection from '../components/PaymentSection.vue'
 import PerformanceSection from '../components/PerformanceSection.vue'
 
 const router = useRouter()
-const { t } = useI18n()
+const { t, te } = useI18n()
 const { locale } = storeToRefs(useAppStore())
 
 const {
@@ -34,9 +34,9 @@ const {
 const facultySelectOptions = computed(() =>
   facultyOptions.value.map((o) => {
     if (o.value === 'all') return { ...o, label: t('monitoring.allFaculties') }
+    if (!o.value) return { ...o }
     const key = `faculties.names.${o.value}`
-    const translated = t(key)
-    return { ...o, label: translated === key ? o.label : translated }
+    return { ...o, label: te(key) ? t(key) : o.label }
   }),
 )
 

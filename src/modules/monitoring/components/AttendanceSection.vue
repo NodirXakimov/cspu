@@ -12,7 +12,7 @@ import type { AttendanceBlock, AttendanceRange } from '../types/monitoring.types
 const props = defineProps<{ data: AttendanceBlock | null }>()
 const range = defineModel<AttendanceRange>('range', { required: true })
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 
 const ranges: AttendanceRange[] = ['week', 'month', 'semester']
 
@@ -21,8 +21,7 @@ const deltaUp = computed(() => (props.data?.deltaPct ?? 0) >= 0)
 /** Localize weekday labels; non-day labels (W1, Sep…) pass through unchanged. */
 function dayLabel(raw: string): string {
   const key = `monitoring.days.${raw.toLowerCase()}`
-  const translated = t(key)
-  return translated === key ? raw : translated
+  return te(key) ? t(key) : raw
 }
 
 const chartOption = computed<EChartsOption>(() => ({

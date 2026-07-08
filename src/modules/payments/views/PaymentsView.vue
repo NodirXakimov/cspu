@@ -123,7 +123,7 @@ onMounted(fetchAll)
         <el-table-column prop="faculty" :label="$t('payments.faculty')" width="110" />
         <el-table-column :label="$t('payments.category')" width="130">
           <template #default="{ row }">
-            {{ $t(`payments.${row.category as PaymentCategory}`) }}
+            {{ row.category ? $t(`payments.${row.category as PaymentCategory}`) : '' }}
           </template>
         </el-table-column>
         <el-table-column :label="$t('payments.amount')" min-width="150" align="right">
@@ -135,7 +135,7 @@ onMounted(fetchAll)
         <el-table-column :label="$t('payments.status')" width="120">
           <template #default="{ row }">
             <el-tag :type="statusMeta[row.status as PaymentStatus]" effect="light">
-              {{ $t(`payments.${row.status}`) }}
+              {{ row.status ? $t(`payments.${row.status}`) : '' }}
             </el-tag>
           </template>
         </el-table-column>

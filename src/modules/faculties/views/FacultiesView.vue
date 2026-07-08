@@ -2,20 +2,20 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus, Edit, Delete, Search, OfficeBuilding } from '@element-plus/icons-vue'
-import { Building2 } from 'lucide-vue-next'
+import { Plus } from '@element-plus/icons-vue'
+import { Building2, Tag, UserRound, Search, X, Check, Pencil, Trash2 } from 'lucide-vue-next'
 import SectionCard from '@/core/components/SectionCard.vue'
 import { useFaculties } from '../composables/useFaculties'
 import type { Faculty, FacultyDraft } from '../types/faculties.types'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 const { items, loading, fetch, create, update, remove } = useFaculties()
 
 /** Localized faculty name (fallback to the stored name). */
 function facultyName(row: Faculty): string {
+  if (!row?.code) return row?.name ?? ''
   const key = `faculties.names.${row.code}`
-  const translated = t(key)
-  return translated === key ? row.name : translated
+  return te(key) ? t(key) : row.name
 }
 
 const search = ref('')
@@ -97,11 +97,12 @@ onMounted(fetch)
             v-model="search"
             :placeholder="$t('common.search')"
             clearable
-            class="!w-56"
+            size="large"
+            class="!w-60"
           >
             <template #prefix><el-icon><Search /></el-icon></template>
           </el-input>
-          <el-button type="primary" @click="openCreate">
+          <el-button type="primary" size="large" @click="openCreate">
             <el-icon class="mr-1"><Plus /></el-icon>{{ $t('faculties.addFaculty') }}
           </el-button>
         </div>
@@ -111,9 +112,9 @@ onMounted(fetch)
         <el-table-column prop="code" :label="$t('faculties.code')" width="90" />
         <el-table-column prop="name" :label="$t('common.name')" min-width="200">
           <template #default="{ row }">
-            <div class="flex items-center gap-2">
-              <el-icon class="text-[var(--el-color-primary)]"><OfficeBuilding /></el-icon>
-              <span>{{ facultyName(row as Faculty) }}</span>
+            <div class="flex items-center gap-2.5">
+              <span class="cell-badge"><Building2 :size="16" /></span>
+              <span class="font-medium">{{ facultyName(row as Faculty) }}</span>
             </div>
           </template>
         </el-table-column>
@@ -121,10 +122,16 @@ onMounted(fetch)
         <el-table-column prop="studentsCount" :label="$t('faculties.students')" width="120" sortable />
         <el-table-column prop="staffCount" :label="$t('faculties.staff')" width="110" sortable />
         <el-table-column prop="established" :label="$t('faculties.established')" width="120" />
-        <el-table-column :label="$t('common.actions')" width="130" fixed="right">
+        <el-table-column :label="$t('common.actions')" width="120" fixed="right" align="center">
           <template #default="{ row }">
-            <el-button size="small" text :icon="Edit" @click="openEdit(row as Faculty)" />
-            <el-button size="small" text type="danger" :icon="Delete" @click="onDelete(row as Faculty)" />
+            <div class="flex items-center justify-center gap-2">
+              <button class="tbl-action tbl-action--edit" @click="openEdit(row as Faculty)">
+                <Pencil :size="16" />
+              </button>
+              <button class="tbl-action tbl-action--del" @click="onDelete(row as Faculty)">
+                <Trash2 :size="16" />
+              </button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -137,30 +144,71 @@ onMounted(fetch)
       align-center
       append-to-body
     >
-      <el-form :model="form" label-width="130px">
-        <el-form-item :label="$t('faculties.code')">
-          <el-input v-model="form.code" />
-        </el-form-item>
-        <el-form-item :label="$t('common.name')">
-          <el-input v-model="form.name" />
-        </el-form-item>
-        <el-form-item :label="$t('faculties.dean')">
-          <el-input v-model="form.dean" />
-        </el-form-item>
-        <el-form-item :label="$t('faculties.students')">
-          <el-input-number v-model="form.studentsCount" :min="0" />
-        </el-form-item>
-        <el-form-item :label="$t('faculties.staff')">
-          <el-input-number v-model="form.staffCount" :min="0" />
-        </el-form-item>
-        <el-form-item :label="$t('faculties.established')">
-          <el-input-number v-model="form.established" :min="1900" :max="2100" />
-        </el-form-item>
-      </el-form>
+      <div class="grid grid-cols-2 gap-x-4 gap-y-4">
+        <el-input v-model="form.code" size="large" :placeholder="$t('faculties.code')">
+          <template #prefix><el-icon><Tag /></el-icon></template>
+        </el-input>
+        <el-input v-model="form.dean" size="large" :placeholder="$t('faculties.dean')">
+          <template #prefix><el-icon><UserRound /></el-icon></template>
+        </el-input>
+        <el-input
+          v-model="form.name"
+          size="large"
+          class="col-span-2"
+          :placeholder="$t('common.name')"
+        >
+          <template #prefix><el-icon><Building2 /></el-icon></template>
+        </el-input>
+        <div>
+          <label class="field-label">{{ $t('faculties.students') }}</label>
+          <el-input-number
+            v-model="form.studentsCount"
+            :min="0"
+            size="large"
+            controls-position="right"
+            class="!w-full"
+          />
+        </div>
+        <div>
+          <label class="field-label">{{ $t('faculties.staff') }}</label>
+          <el-input-number
+            v-model="form.staffCount"
+            :min="0"
+            size="large"
+            controls-position="right"
+            class="!w-full"
+          />
+        </div>
+        <div class="col-span-1">
+          <label class="field-label">{{ $t('faculties.established') }}</label>
+          <el-input-number
+            v-model="form.established"
+            :min="1900"
+            :max="2100"
+            size="large"
+            controls-position="right"
+            class="!w-full"
+          />
+        </div>
+      </div>
       <template #footer>
-        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
-        <el-button type="primary" @click="submit">{{ $t('common.save') }}</el-button>
+        <el-button size="large" @click="dialogVisible = false">
+          <el-icon class="mr-1"><X /></el-icon>{{ $t('common.cancel') }}
+        </el-button>
+        <el-button type="primary" size="large" @click="submit">
+          <el-icon class="mr-1"><Check /></el-icon>{{ $t('common.save') }}
+        </el-button>
       </template>
     </el-dialog>
   </div>
 </template>
+
+<style scoped>
+.field-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--el-text-color-secondary);
+}
+</style>

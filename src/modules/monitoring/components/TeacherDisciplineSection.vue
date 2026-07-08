@@ -12,15 +12,14 @@ import { M } from '../palette'
 import type { TeacherDiscipline } from '../types/monitoring.types'
 
 const props = defineProps<{ data: TeacherDiscipline | null }>()
-const { t } = useI18n()
+const { t, te } = useI18n()
 const { theme } = storeToRefs(useAppStore())
 const isDark = computed(() => theme.value === 'dark')
 
 /** Localized weekday label (falls back to the raw label if not mapped). */
 function dayLabel(raw: string): string {
   const key = `monitoring.days.${raw.toLowerCase()}`
-  const translated = t(key)
-  return translated === key ? raw : translated
+  return te(key) ? t(key) : raw
 }
 
 /** Bright badge colour by how many minutes late. */
