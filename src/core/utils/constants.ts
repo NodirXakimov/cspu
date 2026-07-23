@@ -4,6 +4,9 @@ export const STORAGE_KEYS = {
   theme: 'ums.theme',
   locale: 'ums.locale',
   sidebarCollapsed: 'ums.sidebar.collapsed',
+  accessToken: 'ums.access_token',
+  refreshToken: 'ums.refresh_token',
+  user: 'ums.user',
 } as const
 
 export interface LocaleOption {

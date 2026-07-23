@@ -9,6 +9,8 @@ const rootRoutes: RouteRecordRaw[] = [
     name: 'monitoring',
     component: () => import('./views/MonitoringView.vue'),
     meta: {
+      // Kiosk/TV screens show this without signing in.
+      public: true,
       nav: { titleKey: 'nav.monitoring', icon: markRaw(Tv), order: 6 },
     },
   },

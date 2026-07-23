@@ -1,15 +1,39 @@
 <script setup lang="ts">
-import { computed, type Component } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref, type Component } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { PanelLeftClose, PanelLeftOpen, Bell, ChevronDown } from 'lucide-vue-next'
+import {
+  PanelLeftClose,
+  PanelLeftOpen,
+  Bell,
+  ChevronDown,
+  LogOut,
+} from 'lucide-vue-next'
 import { useAppStore } from '@/core/stores/app.store'
+import { useAuthStore } from '@/modules/auth/stores/auth.store'
 import ThemeToggle from '@/core/components/ThemeToggle.vue'
 import LangSwitcher from '@/core/components/LangSwitcher.vue'
 
 const store = useAppStore()
 const { sidebarCollapsed, theme } = storeToRefs(store)
 const route = useRoute()
+const router = useRouter()
+
+const auth = useAuthStore()
+const { displayName, roleLabel, initials } = storeToRefs(auth)
+
+const signingOut = ref(false)
+
+async function onSignOut() {
+  if (signingOut.value) return
+  signingOut.value = true
+  try {
+    await auth.logout()
+  } finally {
+    signingOut.value = false
+    await router.replace({ name: 'login' })
+  }
+}
 
 const nav = computed(
   () => route.meta?.nav as { titleKey?: string; icon?: Component } | undefined,
@@ -63,14 +87,34 @@ const headColor = computed(() => (theme.value === 'dark' ? '#dbeafe' : '#1e40af'
 
       <span class="header-divider mx-1" />
 
-      <button class="user-chip">
-        <span class="user-avatar">AD</span>
-        <span class="hidden text-left leading-tight lg:block">
-          <span class="block text-sm font-semibold">Admin</span>
-          <span class="block text-xs text-[var(--el-text-color-secondary)]">Administrator</span>
-        </span>
-        <el-icon :size="14" class="hidden text-[var(--el-text-color-secondary)] lg:inline"><ChevronDown /></el-icon>
-      </button>
+      <el-dropdown trigger="click" placement="bottom-end">
+        <button class="user-chip">
+          <span class="user-avatar">{{ initials }}</span>
+          <span class="hidden text-left leading-tight lg:block">
+            <span class="block text-sm font-semibold">{{ displayName }}</span>
+            <span class="block text-xs text-[var(--el-text-color-secondary)]">{{ roleLabel }}</span>
+          </span>
+          <el-icon :size="14" class="hidden text-[var(--el-text-color-secondary)] lg:inline"><ChevronDown /></el-icon>
+        </button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <div class="user-card">
+              <span class="user-avatar user-avatar--lg">{{ initials }}</span>
+              <span class="min-w-0">
+                <span class="block truncate text-sm font-semibold">{{ displayName }}</span>
+                <span class="block truncate text-xs text-[var(--el-text-color-secondary)]">
+                  @{{ auth.user?.username }}
+                </span>
+                <span v-if="roleLabel" class="role-badge">{{ roleLabel }}</span>
+              </span>
+            </div>
+            <el-dropdown-item divided :disabled="signingOut" @click="onSignOut">
+              <el-icon :size="15" class="mr-2 text-[var(--el-color-danger)]"><LogOut /></el-icon>
+              <span class="font-medium">{{ $t('auth.signOut') }}</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
   </el-header>
 </template>
@@ -163,5 +207,31 @@ const headColor = computed(() => (theme.value === 'dark' ? '#dbeafe' : '#1e40af'
   font-weight: 700;
   color: #fff;
   background: linear-gradient(135deg, #8b5cf6, #6366f1);
+}
+.user-avatar--lg {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+/* Dropdown profile card */
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 210px;
+  max-width: 260px;
+  padding: 10px 12px 12px;
+}
+.role-badge {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--el-color-primary);
+  background: color-mix(in srgb, var(--el-color-primary) 12%, transparent);
 }
 </style>
