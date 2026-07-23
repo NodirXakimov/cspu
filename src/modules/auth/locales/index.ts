@@ -12,6 +12,7 @@ export default {
       signingIn: 'Signing in…',
       signOut: 'Sign out',
       profile: 'Profile',
+      backToMonitoring: 'Back to monitoring',
       secureNote: 'Protected area — authorized staff only',
       errors: {
         required: 'Enter your username and password',
@@ -47,6 +48,7 @@ export default {
       signingIn: 'Вход…',
       signOut: 'Выйти',
       profile: 'Профиль',
+      backToMonitoring: 'Назад к мониторингу',
       secureNote: 'Закрытая зона — только для сотрудников',
       errors: {
         required: 'Введите логин и пароль',
@@ -82,6 +84,7 @@ export default {
       signingIn: 'Kirilmoqda…',
       signOut: 'Chiqish',
       profile: 'Profil',
+      backToMonitoring: 'Monitoringga qaytish',
       secureNote: 'Yopiq hudud — faqat vakolatli xodimlar uchun',
       errors: {
         required: 'Login va parolni kiriting',
@@ -117,6 +120,7 @@ export default {
       signingIn: 'Кирилмоқда…',
       signOut: 'Чиқиш',
       profile: 'Профил',
+      backToMonitoring: 'Мониторингга қайтиш',
       secureNote: 'Ёпиқ ҳудуд — фақат ваколатли ходимлар учун',
       errors: {
         required: 'Логин ва паролни киритинг',

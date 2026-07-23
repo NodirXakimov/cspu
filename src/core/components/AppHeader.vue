@@ -31,7 +31,8 @@ async function onSignOut() {
     await auth.logout()
   } finally {
     signingOut.value = false
-    await router.replace({ name: 'login' })
+    // Back to the public landing screen, not the login form.
+    await router.replace('/monitoring')
   }
 }
 

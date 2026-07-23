@@ -32,13 +32,15 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: AppLayout,
-    redirect: '/dashboard',
+    // The public monitoring screen is the app's landing page; staff step into
+    // the admin area from a button there (signing in on the way).
+    redirect: '/monitoring',
     children: moduleRoutes,
   },
   ...rootRoutes,
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/dashboard',
+    redirect: '/monitoring',
   },
 ]
 

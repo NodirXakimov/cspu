@@ -3,10 +3,17 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { X, Building2, Maximize, Minimize } from 'lucide-vue-next'
+import {
+  Building2,
+  Maximize,
+  Minimize,
+  LogIn,
+  LayoutDashboard,
+} from 'lucide-vue-next'
 import ThemeToggle from '@/core/components/ThemeToggle.vue'
 import LangSwitcher from '@/core/components/LangSwitcher.vue'
 import { useAppStore } from '@/core/stores/app.store'
+import { useAuthStore } from '@/modules/auth/stores/auth.store'
 import { useMonitoring } from '../composables/useMonitoring'
 import TeacherDisciplineSection from '../components/TeacherDisciplineSection.vue'
 import AttendanceSection from '../components/AttendanceSection.vue'
@@ -16,6 +23,8 @@ import PerformanceSection from '../components/PerformanceSection.vue'
 const router = useRouter()
 const { t, te } = useI18n()
 const { locale } = storeToRefs(useAppStore())
+// Hydrated from localStorage when the store is created — no request needed here.
+const { isAuthenticated } = storeToRefs(useAuthStore())
 
 const {
   teacher,
@@ -52,8 +61,10 @@ const updatedLabel = computed(() =>
     : '—',
 )
 
-function exit() {
-  router.push('/dashboard')
+/** Enter the admin area — signing in first when there is no session. */
+function enter() {
+  if (isAuthenticated.value) router.push('/dashboard')
+  else router.push({ name: 'login', query: { redirect: '/dashboard' } })
 }
 
 // Fullscreen
@@ -66,15 +77,12 @@ function onFsChange() {
   isFullscreen.value = !!document.fullscreenElement
 }
 
-function onKey(e: KeyboardEvent) {
-  if (e.key === 'Escape' && !document.fullscreenElement) exit()
-}
+// No Escape-to-exit: this is the landing screen, and a stray keypress on a wall
+// display must not kick it to a login prompt. Escape still leaves fullscreen.
 onMounted(() => {
-  window.addEventListener('keydown', onKey)
   document.addEventListener('fullscreenchange', onFsChange)
 })
 onUnmounted(() => {
-  window.removeEventListener('keydown', onKey)
   document.removeEventListener('fullscreenchange', onFsChange)
 })
 </script>
@@ -119,11 +127,17 @@ onUnmounted(() => {
             </el-icon>
           </button>
         </el-tooltip>
-        <el-tooltip :content="t('monitoring.exit')" placement="bottom">
-          <button class="ctrl-btn" @click="exit">
-            <el-icon :size="18"><X /></el-icon>
+        <!-- Kiosk mode: no way into the admin area from a wall display -->
+        <template v-if="!isFullscreen">
+          <span class="cluster-divider" />
+          <button class="enter-btn" @click="enter">
+            <el-icon :size="17">
+              <LayoutDashboard v-if="isAuthenticated" />
+              <LogIn v-else />
+            </el-icon>
+            {{ isAuthenticated ? t('nav.dashboard') : t('auth.signIn') }}
           </button>
-        </el-tooltip>
+        </template>
       </div>
     </header>
 
@@ -206,6 +220,40 @@ onUnmounted(() => {
   width: 1px;
   height: 20px;
   background: var(--el-border-color);
+}
+
+/* Primary entry point into the admin area (mirrors the login submit button) */
+.enter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb 55%, #3b82f6);
+  box-shadow: 0 8px 18px -10px rgba(37, 99, 235, 0.95);
+  transition:
+    transform 0.15s ease,
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.enter-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 12px 22px -10px rgba(37, 99, 235, 1);
+}
+.enter-btn:active {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .enter-btn:hover {
+    transform: none;
+  }
 }
 .live-dot {
   width: 8px;

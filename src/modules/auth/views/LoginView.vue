@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ArrowLeft } from 'lucide-vue-next'
 import ThemeToggle from '@/core/components/ThemeToggle.vue'
 import LangSwitcher from '@/core/components/LangSwitcher.vue'
 import LoginForm from '../components/LoginForm.vue'
@@ -10,9 +11,13 @@ import AuthShowcase from '../components/AuthShowcase.vue'
     <!-- Left half: form -->
     <section class="pane-form">
       <header class="pane-top">
-        <div class="mini-brand">
+        <div class="top-left">
+          <!-- Brand only where the showcase (which carries it) is hidden -->
           <span class="brand-logo">U</span>
-          <span class="mini-brand-name">{{ $t('app.shortTitle') }}</span>
+          <router-link to="/monitoring" class="back-link">
+            <el-icon :size="15"><ArrowLeft /></el-icon>
+            {{ $t('auth.backToMonitoring') }}
+          </router-link>
         </div>
         <div class="controls">
           <LangSwitcher />
@@ -78,15 +83,30 @@ import AuthShowcase from '../components/AuthShowcase.vue'
   justify-content: space-between;
   gap: 12px;
 }
-.mini-brand {
+.top-left {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
-.mini-brand-name {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--el-text-color-secondary);
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+.back-link:hover {
+  background: var(--el-fill-color);
+  color: var(--el-color-primary);
 }
 /* Same gradient mark as AppHeader */
 .brand-logo {
@@ -132,12 +152,9 @@ import AuthShowcase from '../components/AuthShowcase.vue'
   .pane-art {
     display: block;
   }
-  .mini-brand {
+  .top-left .brand-logo {
     /* the showcase already carries the brand on desktop */
-    visibility: hidden;
-  }
-  .pane-top {
-    justify-content: flex-end;
+    display: none;
   }
   .pane-form {
     padding: 26px 40px;

@@ -88,10 +88,24 @@ import { Wallet, TrendingUp, Users, GraduationCap, Activity } from 'lucide-vue-n
 
         <!-- payment collection ring -->
         <div class="glass card-ring float-c">
-          <div class="ring">
+          <!-- NB: not `.ring` — that collides with Tailwind's ring utility -->
+          <div class="pay-ring">
             <svg viewBox="0 0 120 120" aria-hidden="true">
-              <circle class="ring-track" cx="60" cy="60" r="50" />
-              <circle class="ring-value" cx="60" cy="60" r="50" />
+              <defs>
+                <!-- Glow lives inside the SVG with an explicit region: a CSS
+                     drop-shadow would be clipped square by the SVG viewport. -->
+                <filter id="ringGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow
+                    dx="0"
+                    dy="0"
+                    stdDeviation="2.5"
+                    flood-color="#fff"
+                    flood-opacity="0.5"
+                  />
+                </filter>
+              </defs>
+              <circle class="ring-track" cx="60" cy="60" r="45" />
+              <circle class="ring-value" cx="60" cy="60" r="45" filter="url(#ringGlow)" />
             </svg>
             <span class="ring-center">
               <el-icon :size="16"><Wallet /></el-icon>
@@ -320,17 +334,17 @@ import { Wallet, TrendingUp, Users, GraduationCap, Activity } from 'lucide-vue-n
 .bars span:nth-child(6) { animation-delay: 0.75s; }
 
 /* Payment collection ring */
-.ring {
+.pay-ring {
   position: relative;
   width: 104px;
   height: 104px;
 }
-.ring svg {
+.pay-ring svg {
   width: 100%;
   height: 100%;
   transform: rotate(-90deg);
 }
-.ring circle {
+.pay-ring circle {
   fill: none;
   stroke-width: 10;
   stroke-linecap: round;
@@ -340,10 +354,9 @@ import { Wallet, TrendingUp, Users, GraduationCap, Activity } from 'lucide-vue-n
 }
 .ring-value {
   stroke: #fff;
-  /* 2πr = 314.16; 82% filled → offset 56.5 */
-  stroke-dasharray: 314.16;
-  stroke-dashoffset: 314.16;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+  /* 2πr (r=45) = 282.74; 82% filled → offset 282.74 × 0.18 = 50.9 */
+  stroke-dasharray: 282.74;
+  stroke-dashoffset: 282.74;
   animation: ring-fill 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.4s;
 }
 .ring-center {
@@ -427,7 +440,7 @@ import { Wallet, TrendingUp, Users, GraduationCap, Activity } from 'lucide-vue-n
   50% { transform: translateY(-9px); }
 }
 @keyframes ring-fill {
-  to { stroke-dashoffset: 56.5; }
+  to { stroke-dashoffset: 50.9; }
 }
 @keyframes pulse {
   0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
@@ -451,7 +464,7 @@ import { Wallet, TrendingUp, Users, GraduationCap, Activity } from 'lucide-vue-n
   }
   .spark-line { stroke-dashoffset: 0; }
   .spark-dot { opacity: 1; }
-  .ring-value { stroke-dashoffset: 56.5; }
+  .ring-value { stroke-dashoffset: 50.9; }
 }
 
 /* Tighter padding on shorter / narrower desktops */
