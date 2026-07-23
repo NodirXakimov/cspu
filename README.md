@@ -66,10 +66,33 @@ modules/<name>/
 
 ## Backend integration
 
-Services return typed **mock data** while `VITE_USE_MOCK=true` (see `.env`).
-To hit the real API: set `VITE_USE_MOCK=false` and `VITE_API_BASE_URL`; the
-`else` branch of each service already calls the intended endpoints
-(`/attendance`, `/ratings`, `/payments`, `/faculties`, `/dashboard/overview`).
+Feature services return typed **mock data** while `VITE_USE_MOCK=true` (see `.env`).
+To hit the real API: set `VITE_USE_MOCK=false`; the `else` branch of each service
+already calls the intended endpoints (`/attendance`, `/ratings`, `/payments`,
+`/faculties`, `/dashboard/overview`). **Auth always hits the real API** — it ignores
+the mock flag.
+
+### Dev proxy (avoids CORS)
+
+`VITE_API_BASE_URL` is **relative** (`/api/v1`), and `vite.config.ts` proxies that
+prefix to `VITE_API_PROXY_TARGET`. The browser only ever talks to
+`localhost:5173`, so there is no cross-origin request, no preflight, and no
+dependency on backend CORS headers. When the ngrok URL changes, update
+`VITE_API_PROXY_TARGET` only (use the `https://` form) — Vite restarts itself.
+
+For a real deployment, point `VITE_API_BASE_URL` at the absolute API URL and
+enable CORS on the backend (`Access-Control-Allow-Origin` for the app origin,
+`Authorization` + `ngrok-skip-browser-warning` in `Allow-Headers`, and `OPTIONS`
+answered with 204).
+
+## Auth
+
+`modules/auth` owns the session: `/auth/login`, `/auth/refresh`, `/auth/logout`,
+`/users/me`. Tokens live in `localStorage` (`ums.access_token` / `ums.refresh_token`);
+`core/api/client.ts` attaches the bearer and, on a 401, performs a **single-flight**
+refresh and replays the failed request. A failed refresh clears the session and
+routes to `/login`. Routes are guarded in `core/router`; `meta.public: true` opts a
+route out (login page, `/monitoring` TV kiosk).
 
 ## i18n notes
 
