@@ -18,6 +18,20 @@ const term = defineModel<PerformanceTerm>('term', { required: true })
 
 const { t } = useI18n()
 
+/** Cool vertical gradient — cyan → indigo → violet (keeps the section's violet identity). */
+const BAR_GRADIENT = {
+  type: 'linear' as const,
+  x: 0,
+  y: 0,
+  x2: 0,
+  y2: 1,
+  colorStops: [
+    { offset: 0, color: '#22d3ee' }, // cyan-400 (top)
+    { offset: 0.5, color: '#6366f1' }, // indigo-500
+    { offset: 1, color: '#8b5cf6' }, // violet-500 (bottom)
+  ],
+}
+
 const chartOption = computed<EChartsOption>(() => ({
   tooltip: { trigger: 'axis' },
   grid: { left: 36, right: 12, top: 30, bottom: 24 },
@@ -27,7 +41,7 @@ const chartOption = computed<EChartsOption>(() => ({
     {
       type: 'bar',
       barWidth: '55%',
-      itemStyle: { color: M.violet, borderRadius: [4, 4, 0, 0] },
+      itemStyle: { color: BAR_GRADIENT, borderRadius: [6, 6, 0, 0] },
       label: {
         show: true,
         position: 'top',

@@ -23,6 +23,18 @@ export interface AttendanceBlock {
   series: SeriesPoint[]
 }
 
+/** Contract-fee debtor student (public debtors board). */
+export interface DebtorStudent {
+  id: number
+  name: string // short_name, e.g. "KARIMOVA X. A."
+  fullName: string
+  image: string // HEMIS crop URL
+  group: string // group.name, e.g. "BOT-24/1"
+  faculty: string // department.name
+  totalCredit: number // total_credit
+  paidPct: number // 0..1 — fabricated share of the contract paid
+}
+
 /** ③ Payment status. */
 export interface PaymentBlock {
   totalStudents: number

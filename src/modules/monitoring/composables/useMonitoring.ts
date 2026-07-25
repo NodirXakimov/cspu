@@ -9,6 +9,7 @@ import { facultiesService } from '@/modules/faculties/services/faculties.service
 import type {
   AttendanceBlock,
   AttendanceRange,
+  DebtorStudent,
   PaymentBlock,
   PerformanceBlock,
   TeacherDiscipline,
@@ -25,6 +26,7 @@ export function useMonitoring() {
   const teacher = ref<TeacherDiscipline | null>(null)
   const attendance = ref<AttendanceBlock | null>(null)
   const payments = ref<PaymentBlock | null>(null)
+  const debtors = ref<DebtorStudent[]>([])
   const performance = ref<PerformanceBlock | null>(null)
   const lastUpdated = ref<Date | null>(null)
   const loading = ref(false)
@@ -47,12 +49,14 @@ export function useMonitoring() {
   async function fetchAll() {
     loading.value = true
     try {
-      const [t, p] = await Promise.all([
+      const [t, p, d] = await Promise.all([
         monitoringService.teacherDiscipline(faculty.value),
         monitoringService.payments(faculty.value),
+        monitoringService.debtors(faculty.value),
       ])
       teacher.value = t
       payments.value = p
+      debtors.value = d
       await Promise.all([refreshAttendance(), refreshPerformance()])
       lastUpdated.value = new Date()
     } finally {
@@ -82,6 +86,7 @@ export function useMonitoring() {
     teacher,
     attendance,
     payments,
+    debtors,
     performance,
     lastUpdated,
     loading,

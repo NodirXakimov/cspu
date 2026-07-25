@@ -30,6 +30,7 @@ const {
   teacher,
   attendance,
   payments,
+  debtors,
   performance,
   lastUpdated,
   faculty,
@@ -143,9 +144,9 @@ onUnmounted(() => {
 
     <!-- 2×2 sections -->
     <div class="grid min-h-0 w-full flex-1 grid-cols-2 grid-rows-2 gap-3">
-      <TeacherDisciplineSection :data="teacher" />
+      <PaymentSection :data="payments" :debtors="debtors" />
       <AttendanceSection :data="attendance" v-model:range="range" />
-      <PaymentSection :data="payments" />
+      <TeacherDisciplineSection :data="teacher" />
       <PerformanceSection :data="performance" v-model:term="term" :terms="terms" />
     </div>
   </div>

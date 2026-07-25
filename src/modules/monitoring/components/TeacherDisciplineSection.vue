@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
-import { ClipboardCheck, Users, Clock, CalendarClock, UserRound } from 'lucide-vue-next'
+import { ClipboardCheck, Users, Clock, UserCheck } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import { useAppStore } from '@/core/stores/app.store'
 import MonitorSection from './MonitorSection.vue'
@@ -14,7 +14,19 @@ import type { TeacherDiscipline } from '../types/monitoring.types'
 const props = defineProps<{ data: TeacherDiscipline | null }>()
 const { t, te } = useI18n()
 const { theme } = storeToRefs(useAppStore())
-const isDark = computed(() => theme.value === 'dark')
+
+// ECharts (canvas) can't read CSS vars — resolve the donut gap to a real hex.
+const gap = computed(() => (theme.value === 'dark' ? '#1d1e1f' : '#ffffff'))
+
+/** Teachers on time today = total − late (aggregate only; no per-teacher PII). */
+const onTime = computed(() =>
+  props.data ? Math.max(props.data.total - props.data.lateToday, 0) : 0,
+)
+const rate = computed(() =>
+  props.data && props.data.total
+    ? Math.round((onTime.value / props.data.total) * 100)
+    : 0,
+)
 
 /** Localized weekday label (falls back to the raw label if not mapped). */
 function dayLabel(raw: string): string {
@@ -22,22 +34,40 @@ function dayLabel(raw: string): string {
   return te(key) ? t(key) : raw
 }
 
-/** Bright badge colour by how many minutes late. */
-function lateColor(min: number): string {
-  if (min >= 25) return '#ef4444' // red
-  if (min >= 15) return '#f97316' // orange
-  return '#f59e0b' // amber
-}
-
-/** Outlined badge style: coloured text + border, faint tinted fill. */
-function lateStyle(min: number) {
-  const c = lateColor(min)
-  return {
-    color: c,
-    borderColor: c,
-    backgroundColor: `color-mix(in srgb, ${c} 14%, transparent)`,
-  }
-}
+/** On-time vs late donut — the public, name-free view of teacher discipline. */
+const punctualityOption = computed<EChartsOption>(() => ({
+  tooltip: { trigger: 'item' },
+  title: {
+    text: `${rate.value}%`,
+    subtext: t('monitoring.onTimeRate'),
+    left: 'center',
+    top: 'center',
+    itemGap: 2,
+    textStyle: { fontSize: 30, fontWeight: 800, color: M.emerald },
+    subtextStyle: { fontSize: 14 },
+  },
+  series: [
+    {
+      type: 'pie',
+      radius: ['48%', '84%'],
+      center: ['50%', '50%'],
+      itemStyle: { borderRadius: 10, borderColor: gap.value, borderWidth: 4 },
+      label: {
+        show: true,
+        position: 'inside',
+        formatter: '{d}%',
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 700,
+      },
+      emphasis: { scale: true, scaleSize: 6 },
+      data: [
+        { name: t('monitoring.onTime'), value: onTime.value, itemStyle: { color: M.emerald } },
+        { name: t('monitoring.late'), value: props.data?.lateToday ?? 0, itemStyle: { color: M.rose } },
+      ],
+    },
+  ],
+}))
 
 const chartOption = computed<EChartsOption>(() => ({
   tooltip: { trigger: 'axis' },
@@ -75,6 +105,12 @@ const chartOption = computed<EChartsOption>(() => ({
         :accent="M.blue"
       />
       <MonitorStat
+        :label="t('monitoring.notLate')"
+        :value="data ? onTime : null"
+        :icon="UserCheck"
+        :accent="M.emerald"
+      />
+      <MonitorStat
         :label="t('monitoring.lateToday')"
         :value="data?.lateToday ?? null"
         :icon="Clock"
@@ -82,59 +118,34 @@ const chartOption = computed<EChartsOption>(() => ({
       />
     </div>
 
-    <!-- table + chart side by side -->
-    <div class="flex min-h-0 flex-1 gap-3">
-      <div
-        class="h-full min-h-0 flex-1 overflow-hidden rounded-lg border border-[var(--el-border-color)]"
-      >
-        <el-table
-          :data="data?.lateList ?? []"
-          height="100%"
-          class="late-table"
-          :style="{ '--th-color': isDark ? '#dbeafe' : '#1e40af' }"
-        >
-          <el-table-column prop="name" :label="t('monitoring.name')" min-width="110">
-            <template #default="{ row }">
-              <span
-                class="teacher-name inline-flex items-center gap-2"
-                :style="{ color: isDark ? '#ffffff' : '#1a1a1a' }"
-              >
-                <span
-                  class="teacher-avatar"
-                  :style="{
-                    color: isDark ? '#93c5fd' : 'var(--el-color-primary)',
-                    backgroundColor: isDark
-                      ? 'rgba(147,197,253,0.18)'
-                      : 'color-mix(in srgb, var(--el-color-primary) 16%, transparent)',
-                  }"
-                >
-                  <el-icon :size="15"><UserRound /></el-icon>
-                </span>
-                {{ row.name }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="t('monitoring.faculty')" width="100" align="center">
-            <template #default="{ row }">
-              <span class="fac-chip">{{ row.faculty }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="t('monitoring.lateMin')" width="94" align="center">
-            <template #default="{ row }">
-              <span class="late-badge" :style="lateStyle(row.lateMin)">
-                {{ row.lateMin }} {{ t('monitoring.min') }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="t('monitoring.time')" width="100" align="right">
-            <template #default="{ row }">
-              <span class="inline-flex items-center gap-1 font-semibold">
-                <el-icon class="text-[var(--el-text-color-secondary)]"><CalendarClock /></el-icon>
-                {{ row.time }}
-              </span>
-            </template>
-          </el-table-column>
-        </el-table>
+    <!-- punctuality donut + weekly late chart side by side -->
+    <div class="flex min-h-0 flex-1 items-center gap-3">
+      <!-- On-time donut with a compact legend (aggregate, no teacher names) -->
+      <div class="flex h-full min-h-0 flex-1 items-center gap-2">
+        <div class="h-full min-h-0 flex-1">
+          <BaseChart :option="punctualityOption" height="100%" />
+        </div>
+        <div class="flex flex-col justify-center gap-3 pr-1">
+          <div class="pt-row">
+            <span class="pt-label" :style="{ color: M.emerald }">
+              <span class="dot" :style="{ background: M.emerald }" />
+              {{ t('monitoring.onTime') }}
+            </span>
+            <span class="pt-val">{{ onTime }}</span>
+          </div>
+          <div class="pt-row">
+            <span class="pt-label" :style="{ color: M.rose }">
+              <span class="dot" :style="{ background: M.rose }" />
+              {{ t('monitoring.late') }}
+            </span>
+            <span class="pt-val">{{ data?.lateToday ?? '—' }}</span>
+          </div>
+          <div class="my-1 border-t border-[var(--el-border-color-lighter)]" />
+          <div class="pt-row">
+            <span class="pt-label font-bold">{{ t('monitoring.totalTeachers') }}</span>
+            <span class="pt-val text-lg font-extrabold">{{ data?.total ?? '—' }}</span>
+          </div>
+        </div>
       </div>
 
       <div class="h-full min-h-0 flex-1">
@@ -145,55 +156,31 @@ const chartOption = computed<EChartsOption>(() => ({
 </template>
 
 <style scoped>
-.late-table {
+/* Punctuality legend rows beside the donut */
+.pt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   font-size: 15px;
 }
-.late-table :deep(.el-table__cell) {
-  padding: 8px 0;
-}
-
-/* Header text: theme-aware (var set inline on the table) */
-.late-table :deep(.el-table__header th .cell) {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--th-color);
-}
-
-/* Teacher name (colour set inline, theme-aware) */
-.teacher-name {
-  font-weight: 600;
-}
-
-/* Round colored avatar behind the name icon (colours set inline) */
-.teacher-avatar {
+.pt-label {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  flex-shrink: 0;
-  border-radius: 9999px;
-}
-
-/* Faculty short code chip */
-.fac-chip {
-  display: inline-block;
-  padding: 1px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--el-color-primary);
-  background: color-mix(in srgb, var(--el-color-primary) 12%, transparent);
-}
-
-/* Outlined, modern late badge */
-.late-badge {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 9999px;
-  border: 1.5px solid;
-  font-size: 13px;
-  font-weight: 700;
+  gap: 8px;
+  font-weight: 600;
   white-space: nowrap;
+}
+.pt-val {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  flex-shrink: 0;
 }
 </style>

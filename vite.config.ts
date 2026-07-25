@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 5173,
+      port: 1212,
       open: true,
       proxy: useProxy
         ? {

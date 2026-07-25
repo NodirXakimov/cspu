@@ -1,11 +1,15 @@
 import { http, USE_MOCK, mockDelay } from '@/core/api/client'
+import { DEBTORS, CONTRACT_FEE } from '../data/debtors'
 import type {
   AttendanceBlock,
   AttendanceRange,
+  DebtorStudent,
   PaymentBlock,
   PerformanceBlock,
   TeacherDiscipline,
 } from '../types/monitoring.types'
+
+export { CONTRACT_FEE }
 
 /** Available terms for the performance section toggle. */
 export const PERFORMANCE_TERMS = [
@@ -50,8 +54,9 @@ function scaled(base: number, faculty: string): number {
 export const monitoringService = {
   async teacherDiscipline(faculty = ALL_FACULTIES): Promise<TeacherDiscipline> {
     if (USE_MOCK) {
-      const s = share(faculty)
-      const lateToday = Math.max(1, Math.round(jitter(9, 4) * s))
+      const total = scaled(461, faculty)
+      // Aggregate late count ≈ 20–25% of teachers (independent of the named sample).
+      const lateToday = Math.max(1, Math.round(total * (0.2 + Math.random() * 0.05)))
       const names: string[][] = [
         ['A. Karimov', 'PED'], ['D. Yusupova', 'MTA'], ['S. Rahimov', 'BTA'],
         ['N. Tosheva', 'TSG'], ['B. Aliyev', 'JM'], ['M. Ismoilova', 'FIL'],
@@ -63,11 +68,17 @@ export const monitoringService = {
         const own = names.filter(([, f]) => f === faculty)
         pool = own.length ? own : names.map(([n]) => [n, faculty])
       }
-      const count = Math.min(pool.length, lateToday)
+      // Named list is only a sample for the admin page — capped by the name pool.
+      const sampleCount = Math.min(pool.length, lateToday)
+      // Weekly late counts, scaled to the same order of magnitude as lateToday.
+      const weeklyRatio: [string, number][] = [
+        ['Mon', 0.18], ['Tue', 0.14], ['Wed', 0.22],
+        ['Thu', 0.12], ['Fri', 0.25], ['Sat', 0.09],
+      ]
       return mockDelay({
-        total: scaled(461, faculty),
-        lateToday: count,
-        lateList: pool.slice(0, count).map(([name, fac], i) => {
+        total,
+        lateToday,
+        lateList: pool.slice(0, sampleCount).map(([name, fac], i) => {
           const lateMin = 6 + i * 4
           return {
             name,
@@ -76,17 +87,25 @@ export const monitoringService = {
             lateMin,
           }
         }),
-        weekly: [
-          { label: 'Mon', value: Math.max(1, Math.round(jitter(7) * s)) },
-          { label: 'Tue', value: Math.max(1, Math.round(jitter(5) * s)) },
-          { label: 'Wed', value: Math.max(1, Math.round(jitter(9) * s)) },
-          { label: 'Thu', value: Math.max(1, Math.round(jitter(4) * s)) },
-          { label: 'Fri', value: Math.max(1, Math.round(jitter(11) * s)) },
-          { label: 'Sat', value: Math.max(1, Math.round(jitter(3) * s)) },
-        ],
+        weekly: weeklyRatio.map(([label, r]) => ({
+          label,
+          value: Math.max(1, jitter(Math.round(total * r), 14)),
+        })),
       })
     }
     const { data } = await http.get<TeacherDiscipline>('/monitoring/teacher-discipline', {
+      params: { faculty },
+    })
+    return data
+  },
+
+  async debtors(faculty = ALL_FACULTIES): Promise<DebtorStudent[]> {
+    if (USE_MOCK) {
+      // Biggest debt first (highest unpaid share → lowest paidPct).
+      const sorted = [...DEBTORS].sort((a, b) => a.paidPct - b.paidPct).slice(0, 10)
+      return mockDelay(sorted)
+    }
+    const { data } = await http.get<DebtorStudent[]>('/monitoring/debtors', {
       params: { faculty },
     })
     return data
