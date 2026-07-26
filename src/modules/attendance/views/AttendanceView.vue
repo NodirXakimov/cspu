@@ -269,7 +269,7 @@ watch([filtered, loading], () => requestAnimationFrame(updateHeight))
           </el-table-column>
           <el-table-column :label="$t('attendance.status')" width="140" align="center">
             <template #default="{ row }">
-              <span class="att-badge" :class="`att-badge--${row.status}`">
+              <span v-if="row?.status" class="att-badge" :class="`att-badge--${row.status}`">
                 {{ $t(`attendance.${row.status}`) }}
               </span>
             </template>

@@ -257,7 +257,7 @@ watch([filtered, loading], () => requestAnimationFrame(updateHeight))
         </el-table-column>
         <el-table-column :label="$t('payments.status')" width="130" align="center">
           <template #default="{ row }">
-            <span class="pay-badge" :class="`pay-badge--${row.status}`">
+            <span v-if="row?.status" class="pay-badge" :class="`pay-badge--${row.status}`">
               {{ $t(`payments.${row.status}`) }}
             </span>
           </template>

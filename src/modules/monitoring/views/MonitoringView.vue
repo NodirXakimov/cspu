@@ -145,7 +145,7 @@ onUnmounted(() => {
               <LayoutDashboard v-if="isAuthenticated" />
               <LogIn v-else />
             </el-icon>
-            {{ isAuthenticated ? t('nav.attendance') : t('auth.signIn') }}
+            {{ isAuthenticated ? t('nav.dashboard') : t('auth.signIn') }}
           </button>
         </template>
       </div>

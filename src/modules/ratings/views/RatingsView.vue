@@ -277,7 +277,7 @@ watch([filtered, loading], () => requestAnimationFrame(updateHeight))
           </el-table-column>
           <el-table-column :label="$t('ratings.risk')" width="180" align="center">
             <template #default="{ row }">
-              <span class="rat-badge" :class="`rat-badge--${row.riskLevel}`">
+              <span v-if="row?.riskLevel" class="rat-badge" :class="`rat-badge--${row.riskLevel}`">
                 {{ $t(`ratings.${row.riskLevel}`) }}
               </span>
             </template>
