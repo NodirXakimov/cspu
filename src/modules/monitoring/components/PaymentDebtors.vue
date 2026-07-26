@@ -13,8 +13,9 @@ const props = defineProps<{ items: DebtorStudent[]; contract: number }>()
 const { t } = useI18n()
 const { theme } = storeToRefs(useAppStore())
 
+// Avatar scales with the viewport: bigger on large screens, smaller on small.
 const { scale } = useMonitorScale()
-const iconSize = computed(() => Math.round(24 * scale.value))
+const iconSize = computed(() => Math.round(26 * scale.value))
 
 // Dark blue name on light, soft blue on dark.
 const nameColor = computed(() => (theme.value === 'dark' ? '#bfdbfe' : '#1e40af'))
@@ -99,15 +100,16 @@ const paidPercent = (s: DebtorStudent) => Math.round(s.paidPct * 100)
   background: var(--el-bg-color);
 }
 
-/* Bigger, rounded-rectangle initials avatar */
+/* Square avatar — scales with viewport (bigger on large, smaller on small). */
 .avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: calc(48px * var(--mscale, 1));
-  height: calc(56px * var(--mscale, 1));
+  width: calc(52px * var(--mscale, 1));
+  height: calc(52px * var(--mscale, 1));
   flex-shrink: 0;
-  border-radius: 11px;
+  align-self: center;
+  border-radius: 12px;
   color: #fff;
   background: linear-gradient(135deg, #2563eb, #3b82f6);
   box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.35);

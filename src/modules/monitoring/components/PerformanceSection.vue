@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
 import { Trophy, Star, ClipboardCheck, CircleX } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
+import { useAppStore } from '@/core/stores/app.store'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
 import { useMonitorScale } from '../composables/useMonitorScale'
@@ -20,6 +22,9 @@ const term = defineModel<PerformanceTerm>('term', { required: true })
 const { t } = useI18n()
 const { scale } = useMonitorScale()
 const fs = (n: number) => Math.round(n * scale.value)
+const { theme } = storeToRefs(useAppStore())
+// Bar-top labels: dark ink on light, light ink on dark ('inherit' rendered black).
+const labelColor = computed(() => (theme.value === 'dark' ? '#e5e7eb' : '#1f2937'))
 
 /** Cool vertical gradient — cyan → indigo → violet (keeps the section's violet identity). */
 const BAR_GRADIENT = {
@@ -50,7 +55,7 @@ const chartOption = computed<EChartsOption>(() => ({
         position: 'top',
         fontWeight: 700,
         fontSize: fs(15),
-        color: 'inherit',
+        color: labelColor.value,
       },
       data: props.data?.distribution.map((d) => d.value) ?? [],
     },

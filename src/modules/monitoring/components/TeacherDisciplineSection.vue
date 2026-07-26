@@ -67,7 +67,7 @@ const punctualityOption = computed<EChartsOption>(() => ({
       label: {
         show: true,
         position: 'inside',
-        formatter: '{d}%',
+        formatter: (p: { percent?: number }) => `${Math.round(p.percent ?? 0)}%`,
         color: '#fff',
         fontSize: sliceFs.value,
         fontWeight: 700,

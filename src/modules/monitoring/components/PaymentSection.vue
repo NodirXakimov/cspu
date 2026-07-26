@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import type { EChartsOption } from 'echarts'
-import { Banknote, Users, BadgeCheck, CircleAlert, Play, Pause } from 'lucide-vue-next'
+import { Banknote, Users, BadgeCheck, CircleAlert, Play, Pause, UsersRound } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import { useAppStore } from '@/core/stores/app.store'
 import { formatSpaced } from '@/core/utils/format'
@@ -36,6 +36,12 @@ const VIEW_LABEL_KEY: Record<string, string> = {
   summary: 'monitoring.viewSummary',
   debtors: 'monitoring.viewDebtors',
 }
+
+// Tile title + icon follow the active carousel view.
+const sectionTitle = computed(() =>
+  view.value === 'debtors' ? t('monitoring.debtorsSection') : t('monitoring.payment'),
+)
+const sectionIcon = computed(() => (view.value === 'debtors' ? UsersRound : Banknote))
 
 // ECharts (canvas) can't read CSS vars — resolve the gap colour to a real hex.
 const gap = computed(() => (theme.value === 'dark' ? '#1d1e1f' : '#ffffff'))
@@ -85,7 +91,7 @@ const chartOption = computed<EChartsOption>(() => ({
       label: {
         show: true,
         position: 'inside',
-        formatter: '{d}%',
+        formatter: (p: { percent?: number }) => `${Math.round(p.percent ?? 0)}%`,
         color: '#fff',
         fontSize: sliceFs.value,
         fontWeight: 700,
@@ -101,7 +107,7 @@ const chartOption = computed<EChartsOption>(() => ({
 </script>
 
 <template>
-  <MonitorSection :title="t('monitoring.payment')" :icon="Banknote" :accent="M.emerald">
+  <MonitorSection :title="sectionTitle" :icon="sectionIcon" :accent="M.emerald">
     <template #toolbar>
       <div class="switcher">
         <div class="seg-switch">
