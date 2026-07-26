@@ -9,7 +9,7 @@ const props = withDefaults(
     /** Raw numeric value; null while loading. */
     value: number | null
     /** How the animated number is rendered. */
-    format?: 'number' | 'money' | 'moneyCompact' | 'percent'
+    format?: 'number' | 'money' | 'moneyCompact' | 'percent' | 'decimal'
     currency?: string
     /** Compact-money unit labels (billions / millions). */
     unitBln?: string
@@ -43,6 +43,8 @@ const formatted = computed(() => {
       return formatSpaced(Math.round(n))
     case 'percent':
       return `${formatSpaced(Math.round(n))}%`
+    case 'decimal':
+      return formatSpaced(n, 2)
     default:
       return formatSpaced(Math.round(n))
   }

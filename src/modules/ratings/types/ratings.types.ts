@@ -1,17 +1,23 @@
-import type { SeriesPoint } from '@/core/types/common'
+export type RiskLevel = 'critical' | 'atRisk' | 'average' | 'good'
 
 export interface StudentRating {
+  id: number
   studentId: string
   studentName: string
-  faculty: string
-  gpa: number // 0-4
-  score: number // 0-100
-  rank: number
+  faculty: string // faculty code
+  specialty: string
+  group: string
+  gpa: number // 0–4
+  score: number // 0–100
+  failedSubjects: number // academic debt
+  riskLevel: RiskLevel
 }
 
-export interface RatingsAnalytics {
-  /** Number of students per score bucket (0-59, 60-69, …). */
-  distribution: SeriesPoint[]
-  /** Average score per faculty. */
-  byFaculty: SeriesPoint[]
+export interface RatingsSummary {
+  total: number
+  critical: number
+  atRisk: number
+  avgGpa: number
+  avgScore: number
+  passRate: number // score ≥ 60 %
 }
