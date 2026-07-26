@@ -59,11 +59,16 @@ const paidPercent = (s: DebtorStudent) => Math.round(s.paidPct * 100)
 <style scoped>
 .debtors-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-auto-rows: 1fr;
   gap: 9px 11px;
   min-height: 0;
   flex: 1;
+}
+@media (min-width: 640px) {
+  .debtors-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .debtor {

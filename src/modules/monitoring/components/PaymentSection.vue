@@ -120,7 +120,7 @@ const chartOption = computed<EChartsOption>(() => ({
     <transition name="carousel" mode="out-in">
       <!-- View A: payment summary (5s) -->
       <div v-if="view === 'summary'" key="summary" class="view flex min-h-0 flex-1 flex-col gap-2.5">
-        <div class="flex gap-3">
+        <div class="flex flex-wrap gap-3">
           <MonitorStat
             :label="t('monitoring.totalStudents')"
             :value="data?.totalStudents ?? null"
@@ -141,13 +141,13 @@ const chartOption = computed<EChartsOption>(() => ({
           />
         </div>
 
-        <!-- donut + money summary side by side -->
-        <div class="flex min-h-0 flex-1 items-center gap-2">
-          <div class="h-full min-h-0 flex-1">
+        <!-- donut + money summary — stacked below lg, side by side on lg -->
+        <div class="flex min-h-0 flex-1 flex-col items-center gap-2 lg:flex-row">
+          <div class="min-h-[200px] w-full flex-1 lg:h-full lg:min-h-0">
             <BaseChart :option="chartOption" height="100%" />
           </div>
 
-          <div class="flex flex-1 flex-col justify-center gap-3 pr-1" :style="{ color: textColor }">
+          <div class="flex w-full flex-1 flex-col justify-center gap-3 pr-1 lg:w-auto" :style="{ color: textColor }">
             <div class="money-row">
               <span class="money-label font-semibold" :style="{ color: M.emerald }">
                 <span class="dot" :style="{ background: M.emerald }" />

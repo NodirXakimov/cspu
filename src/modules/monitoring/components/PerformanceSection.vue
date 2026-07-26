@@ -65,7 +65,7 @@ const chartOption = computed<EChartsOption>(() => ({
       </el-radio-group>
     </template>
 
-    <div class="flex gap-3">
+    <div class="flex flex-wrap gap-3">
       <MonitorStat
         :label="t('monitoring.avgGpa')"
         :value="data?.avgGpa ?? null"

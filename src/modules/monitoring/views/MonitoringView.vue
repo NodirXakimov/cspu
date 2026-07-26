@@ -89,11 +89,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="monitoring-page flex h-screen w-screen flex-col gap-3 overflow-hidden p-3">
+  <div class="monitoring-page flex min-h-[100dvh] w-full flex-col gap-3 overflow-y-auto p-2 sm:p-3 [@media(min-width:1024px)_and_(min-height:800px)]:h-screen [@media(min-width:1024px)_and_(min-height:800px)]:overflow-hidden">
     <!-- Top control row (above all cards) -->
-    <header class="flex shrink-0 items-center justify-between gap-3">
+    <header class="flex shrink-0 flex-wrap items-center justify-between gap-2 sm:gap-3">
       <!-- Global faculty filter (applies to all four cards) -->
-      <div class="ctrl-pill faculty-filter">
+      <div class="ctrl-pill faculty-filter w-full sm:w-auto">
         <el-select
           v-model="faculty"
           size="large"
@@ -112,11 +112,12 @@ onUnmounted(() => {
       </div>
 
       <!-- Controls -->
-      <div class="ctrl-pill control-bar">
-        <span class="flex items-center gap-2 pl-1 pr-1 text-xs font-medium text-[var(--el-text-color-secondary)]">
+      <div class="ctrl-pill control-bar ml-auto">
+        <span class="hidden items-center gap-2 pl-1 pr-1 text-xs font-medium text-[var(--el-text-color-secondary)] sm:flex">
           <span class="live-dot" />
           {{ t('monitoring.updated') }} {{ updatedLabel }}
         </span>
+        <span class="live-dot ml-1 sm:hidden" />
         <span class="cluster-divider" />
         <LangSwitcher />
         <ThemeToggle />
@@ -142,8 +143,9 @@ onUnmounted(() => {
       </div>
     </header>
 
-    <!-- 2×2 sections -->
-    <div class="grid min-h-0 w-full flex-1 grid-cols-2 grid-rows-2 gap-3">
+    <!-- Responsive: 1-col phone · 2-col tablet+ (scroll, fixed-height tiles) ·
+         fit 2×2 only when the screen is both wide AND tall enough (TV/desktop) -->
+    <div class="grid min-h-0 w-full flex-1 grid-cols-1 auto-rows-[minmax(360px,1fr)] gap-3 md:grid-cols-2 [@media(min-width:1024px)_and_(min-height:800px)]:auto-rows-auto [@media(min-width:1024px)_and_(min-height:800px)]:grid-rows-2">
       <PaymentSection :data="payments" :debtors="debtors" />
       <AttendanceSection :data="attendance" v-model:range="range" />
       <TeacherDisciplineSection :data="teacher" />
@@ -177,7 +179,12 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 .faculty-filter__select {
-  width: 220px;
+  width: 100%;
+}
+@media (min-width: 640px) {
+  .faculty-filter__select {
+    width: 220px;
+  }
 }
 /* Strip the inner select's own box; inner padding lives here so the popper
    still aligns to the pill's left edge (wrapper box = pill box). */

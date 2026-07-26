@@ -97,7 +97,7 @@ const chartOption = computed<EChartsOption>(() => ({
 
 <template>
   <MonitorSection :title="t('monitoring.teachers')" :icon="ClipboardCheck" :accent="M.amber">
-    <div class="flex gap-3">
+    <div class="flex flex-wrap gap-3">
       <MonitorStat
         :label="t('monitoring.totalTeachers')"
         :value="data?.total ?? null"
@@ -118,11 +118,11 @@ const chartOption = computed<EChartsOption>(() => ({
       />
     </div>
 
-    <!-- punctuality donut + weekly late chart side by side -->
-    <div class="flex min-h-0 flex-1 items-center gap-3">
+    <!-- punctuality donut + weekly late chart — stacked below lg -->
+    <div class="flex min-h-0 flex-1 flex-col items-center gap-3 lg:flex-row">
       <!-- On-time donut with a compact legend (aggregate, no teacher names) -->
-      <div class="flex h-full min-h-0 flex-1 items-center gap-2">
-        <div class="h-full min-h-0 flex-1">
+      <div class="flex min-h-[180px] w-full flex-1 items-center gap-2 lg:h-full lg:min-h-0">
+        <div class="h-full min-h-[160px] flex-1 lg:min-h-0">
           <BaseChart :option="punctualityOption" height="100%" />
         </div>
         <div class="flex flex-col justify-center gap-3 pr-1">
@@ -148,7 +148,7 @@ const chartOption = computed<EChartsOption>(() => ({
         </div>
       </div>
 
-      <div class="h-full min-h-0 flex-1">
+      <div class="min-h-[180px] w-full flex-1 lg:h-full lg:min-h-0">
         <BaseChart :option="chartOption" height="100%" />
       </div>
     </div>
