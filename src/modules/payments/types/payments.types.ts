@@ -1,27 +1,21 @@
-import type { SeriesPoint } from '@/core/types/common'
-
-export type PaymentStatus = 'paid' | 'pending' | 'overdue'
-export type PaymentCategory = 'tuition' | 'dormitory' | 'other'
+export type PaymentStatus = 'paid' | 'partial' | 'unpaid'
 
 export interface Payment {
   id: number
   studentName: string
-  faculty: string
-  amount: number
-  category: PaymentCategory
-  status: PaymentStatus
-  date: string // ISO
+  faculty: string // faculty code
+  group: string
+  contract: number // total contract fee
+  paid: number // amount paid so far
+  status: PaymentStatus // derived from paid vs contract
 }
 
 export interface PaymentsSummary {
-  collected: number
-  pending: number
-  overdue: number
-}
-
-export interface PaymentsAnalytics {
-  /** Amount collected per month. */
-  monthly: SeriesPoint[]
-  /** Amount split by category. */
-  byCategory: SeriesPoint[]
+  totalStudents: number
+  paidStudents: number // fully paid
+  unpaidStudents: number // not fully paid (partial + unpaid)
+  collected: number // Σ paid
+  outstanding: number // Σ (contract − paid)
+  totalContract: number // Σ contract
+  rate: number // collected / totalContract × 100
 }

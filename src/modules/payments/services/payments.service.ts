@@ -1,66 +1,106 @@
 import { http, USE_MOCK, mockDelay } from '@/core/api/client'
 import type {
   Payment,
-  PaymentCategory,
   PaymentStatus,
-  PaymentsAnalytics,
   PaymentsSummary,
 } from '../types/payments.types'
 
-const NAMES = [
-  'Ali Valiyev', 'Dilnoza Karimova', 'Sardor Rustamov', 'Malika Yusupova',
-  'Jasur Toshev', 'Nigora Aliyeva', 'Bekzod Rahimov', 'Sevara Ismoilova',
-]
-const FACULTIES = ['INF', 'ECO', 'ENG', 'MED', 'LAW', 'PHL']
-const CATEGORIES: PaymentCategory[] = ['tuition', 'dormitory', 'other']
-const STATUSES: PaymentStatus[] = ['paid', 'pending', 'overdue']
+/** Flat yearly contract fee per student (so'm). */
+export const CONTRACT_FEE = 12_000_000
 
-function mockPayments(): Payment[] {
-  const now = Date.now()
-  return Array.from({ length: 24 }, (_, i) => ({
-    id: i + 1,
-    studentName: NAMES[i % NAMES.length],
-    faculty: FACULTIES[i % FACULTIES.length],
-    amount: [1200000, 6500000, 350000][i % 3] + (i % 5) * 100000,
-    category: CATEGORIES[i % CATEGORIES.length],
-    status: STATUSES[i % 3 === 2 ? 2 : i % 4 === 3 ? 1 : 0],
-    date: new Date(now - i * 3 * 86400000).toISOString(),
-  }))
+const NAMES = [
+  'KARIMOVA XULKAROY ANVARJON QIZI',
+  'UBAYDULLAYEVA KOMILA INOMOVNA',
+  'RAHMATULLAYEVA ZARINA AKBAR QIZI',
+  'ALIYEVA SEVINCH G‘ULOMJON QIZI',
+  'TUXSONOVA GULDONA XOLMIRZA QIZI',
+  'DUYSEBAYEV NURBEK TOLKINOVICH',
+  'ASRAKULOVA GAYANE ABRAMOVNA',
+  'DADAYEVA SEVARA TASHPULATOVNA',
+  'ABDUQODIROVA MAFTUNA ABDUMAJIDOVNA',
+  'XUDOYQULOVA PARDAXOL YO‘LDOSHEVNA',
+  'YULDASHEV AZIZBEK SOBIR O‘G‘LI',
+  'QODIROVA MADINA BAXTIYOR QIZI',
+]
+
+/** Faculty code → its group codes (mirrors the faculties module codes). */
+const FACULTY_GROUPS: Record<string, string[]> = {
+  PED: ['PED-24/1', 'PED-23/2'],
+  MTA: ['MAT(s)-23/4', 'MAT-25/4'],
+  BTA: ['BOT-24/1', 'BOT-23/2', 'BOT-25/7'],
+  JM: ['JM-24/1', 'JM-22/3'],
+  FIL: ['FIL-23/1', 'FIL-24/2'],
+  MAT: ['MBTJT-23/2', 'MBTJT-22/7'],
+  TUR: ['TUR-24/1', 'TUR-23/2'],
+}
+
+/** Deterministic pseudo-random so list() and summary() stay in sync. */
+function seeded(i: number): number {
+  const x = Math.sin(i * 12.9898) * 43758.5453
+  return x - Math.floor(x)
+}
+
+function statusFor(paid: number, contract: number): PaymentStatus {
+  if (paid >= contract) return 'paid'
+  if (paid <= 0) return 'unpaid'
+  return 'partial'
+}
+
+/** Build the mock roster once so both endpoints agree. */
+const MOCK_PAYMENTS: Payment[] = (() => {
+  const facultyCodes = Object.keys(FACULTY_GROUPS)
+  const rows: Payment[] = []
+  let id = 1
+  for (const code of facultyCodes) {
+    const groups = FACULTY_GROUPS[code]
+    for (let n = 0; n < 5; n++) {
+      const r = seeded(id)
+      // ~40% fully paid, ~20% unpaid, rest partial.
+      let paid: number
+      if (r < 0.4) paid = CONTRACT_FEE
+      else if (r > 0.8) paid = 0
+      else paid = Math.round(CONTRACT_FEE * (0.2 + seeded(id * 7) * 0.6))
+      rows.push({
+        id,
+        studentName: NAMES[id % NAMES.length],
+        faculty: code,
+        group: groups[id % groups.length],
+        contract: CONTRACT_FEE,
+        paid,
+        status: statusFor(paid, CONTRACT_FEE),
+      })
+      id++
+    }
+  }
+  return rows
+})()
+
+function computeSummary(rows: Payment[]): PaymentsSummary {
+  const totalStudents = rows.length
+  const paidStudents = rows.filter((r) => r.status === 'paid').length
+  const collected = rows.reduce((n, r) => n + r.paid, 0)
+  const totalContract = rows.reduce((n, r) => n + r.contract, 0)
+  return {
+    totalStudents,
+    paidStudents,
+    unpaidStudents: totalStudents - paidStudents,
+    collected,
+    outstanding: totalContract - collected,
+    totalContract,
+    rate: totalContract ? Math.round((collected / totalContract) * 100) : 0,
+  }
 }
 
 export const paymentsService = {
   async list(): Promise<Payment[]> {
-    if (USE_MOCK) return mockDelay(mockPayments())
+    if (USE_MOCK) return mockDelay([...MOCK_PAYMENTS])
     const { data } = await http.get<Payment[]>('/payments')
     return data
   },
 
   async summary(): Promise<PaymentsSummary> {
-    if (USE_MOCK) {
-      return mockDelay({
-        collected: 1_845_000_000,
-        pending: 264_000_000,
-        overdue: 92_000_000,
-      })
-    }
+    if (USE_MOCK) return mockDelay(computeSummary(MOCK_PAYMENTS))
     const { data } = await http.get<PaymentsSummary>('/payments/summary')
-    return data
-  },
-
-  async analytics(): Promise<PaymentsAnalytics> {
-    if (USE_MOCK) {
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-      const values = [210, 240, 198, 305, 288, 604].map((v) => v * 1_000_000)
-      return mockDelay({
-        monthly: months.map((label, i) => ({ label, value: values[i] })),
-        byCategory: [
-          { label: 'tuition', value: 1_520_000_000 },
-          { label: 'dormitory', value: 246_000_000 },
-          { label: 'other', value: 79_000_000 },
-        ],
-      })
-    }
-    const { data } = await http.get<PaymentsAnalytics>('/payments/analytics')
     return data
   },
 }

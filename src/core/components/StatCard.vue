@@ -9,8 +9,11 @@ const props = withDefaults(
     /** Raw numeric value; null while loading. */
     value: number | null
     /** How the animated number is rendered. */
-    format?: 'number' | 'money' | 'percent'
+    format?: 'number' | 'money' | 'moneyCompact' | 'percent'
     currency?: string
+    /** Compact-money unit labels (billions / millions). */
+    unitBln?: string
+    unitMln?: string
     icon?: Component
     trend?: number // percentage, +/-
     accent?: string // css color
@@ -19,6 +22,8 @@ const props = withDefaults(
   {
     format: 'number',
     currency: 'UZS',
+    unitBln: 'mlrd',
+    unitMln: 'mln',
     accent: 'var(--el-color-primary)',
     duration: 1200,
   },
@@ -32,6 +37,10 @@ const formatted = computed(() => {
   switch (props.format) {
     case 'money':
       return `${formatSpaced(Math.round(n))} ${props.currency}`
+    case 'moneyCompact':
+      if (Math.abs(n) >= 1e9) return `${formatSpaced(n / 1e9, 1)} ${props.unitBln}`
+      if (Math.abs(n) >= 1e6) return `${formatSpaced(n / 1e6, 1)} ${props.unitMln}`
+      return formatSpaced(Math.round(n))
     case 'percent':
       return `${formatSpaced(Math.round(n))}%`
     default:
