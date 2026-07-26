@@ -16,12 +16,62 @@ import uzCyrl from './locales/uz-Cyrl'
 type LocaleMessages = Record<string, unknown>
 type MessageMap = Record<LocaleKey, LocaleMessages>
 
-/** Element Plus locale per app locale. Uz-Cyrl reuses the Uz (Latin) EP pack. */
+/**
+ * Element Plus has no Cyrillic-Uzbek pack, so we clone the Uz (Latin) pack and
+ * override the user-visible strings (pagination / table / select) into Cyrillic.
+ */
+const elUzCyrl: Language = {
+  name: 'uz-cyrl',
+  el: {
+    ...elUz.el,
+    pagination: {
+      goto: 'Ўтиш',
+      pagesize: 'та/саҳифа',
+      total: 'Жами {total} та',
+      pageClassifier: 'саҳифа',
+      page: 'Саҳифа',
+      prev: 'Олдинги саҳифа',
+      next: 'Кейинги саҳифа',
+      currentPage: '{pager}-саҳифа',
+      prevPages: 'Олдинги {pager} саҳифа',
+      nextPages: 'Кейинги {pager} саҳифа',
+      deprecationWarning: '',
+    },
+    table: {
+      ...elUz.el?.table,
+      emptyText: 'Маълумот йўқ',
+      confirmFilter: 'Тасдиқлаш',
+      resetFilter: 'Тозалаш',
+      clearFilter: 'Барчаси',
+      sumText: 'Жами',
+    },
+    select: {
+      ...elUz.el?.select,
+      loading: 'Юкланмоқда',
+      noMatch: 'Мос маълумот йўқ',
+      noData: 'Маълумот йўқ',
+      placeholder: 'Танланг',
+    },
+    datepicker: {
+      ...elUz.el?.datepicker,
+      now: 'Ҳозир',
+      today: 'Бугун',
+      cancel: 'Бекор қилиш',
+      clear: 'Тозалаш',
+      confirm: 'Тасдиқлаш',
+      selectDate: 'Санани танланг',
+      startDate: 'Бошланиш санаси',
+      endDate: 'Тугаш санаси',
+    },
+  },
+} as Language
+
+/** Element Plus locale per app locale. */
 export const ELEMENT_LOCALES: Record<LocaleKey, Language> = {
   en: elEn,
   ru: elRu,
   'uz-Latn': elUz,
-  'uz-Cyrl': elUz,
+  'uz-Cyrl': elUzCyrl,
 }
 
 function deepMerge(target: LocaleMessages, source: LocaleMessages): LocaleMessages {
