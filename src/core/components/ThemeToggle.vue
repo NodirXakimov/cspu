@@ -28,8 +28,8 @@ const label = computed(() =>
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: calc(34px * var(--mscale, 1));
+  height: calc(34px * var(--mscale, 1));
   border: none;
   border-radius: 10px;
   background: transparent;

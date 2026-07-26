@@ -8,12 +8,24 @@ import BaseChart from '@/core/components/BaseChart.vue'
 import { useAppStore } from '@/core/stores/app.store'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
+import { useMonitorScale } from '../composables/useMonitorScale'
+import { useElementSize } from '../composables/useElementSize'
 import { M } from '../palette'
 import type { TeacherDiscipline } from '../types/monitoring.types'
 
 const props = defineProps<{ data: TeacherDiscipline | null }>()
 const { t, te } = useI18n()
 const { theme } = storeToRefs(useAppStore())
+
+const { scale } = useMonitorScale()
+const fs = (n: number) => Math.round(n * scale.value)
+
+// Donut center text sized from its real rendered width (fits the ring at any size).
+const { setEl: setDonutEl, width: donutW } = useElementSize()
+const dw = computed(() => donutW.value || 180)
+const titleFs = computed(() => Math.max(12, Math.round(dw.value * 0.115)))
+const subFs = computed(() => Math.max(6, Math.round(dw.value * 0.036)))
+const sliceFs = computed(() => Math.max(9, Math.round(dw.value * 0.05)))
 
 // ECharts (canvas) can't read CSS vars — resolve the donut gap to a real hex.
 const gap = computed(() => (theme.value === 'dark' ? '#1d1e1f' : '#ffffff'))
@@ -43,13 +55,13 @@ const punctualityOption = computed<EChartsOption>(() => ({
     left: 'center',
     top: 'center',
     itemGap: 2,
-    textStyle: { fontSize: 30, fontWeight: 800, color: M.emerald },
-    subtextStyle: { fontSize: 14 },
+    textStyle: { fontSize: titleFs.value, fontWeight: 800, color: M.emerald },
+    subtextStyle: { fontSize: subFs.value },
   },
   series: [
     {
       type: 'pie',
-      radius: ['48%', '84%'],
+      radius: ['46%', '84%'],
       center: ['50%', '50%'],
       itemStyle: { borderRadius: 10, borderColor: gap.value, borderWidth: 4 },
       label: {
@@ -57,7 +69,7 @@ const punctualityOption = computed<EChartsOption>(() => ({
         position: 'inside',
         formatter: '{d}%',
         color: '#fff',
-        fontSize: 16,
+        fontSize: sliceFs.value,
         fontWeight: 700,
       },
       emphasis: { scale: true, scaleSize: 6 },
@@ -86,7 +98,7 @@ const chartOption = computed<EChartsOption>(() => ({
         show: true,
         position: 'top',
         fontWeight: 700,
-        fontSize: 15,
+        fontSize: fs(15),
         color: 'inherit',
       },
       data: props.data?.weekly.map((d) => d.value) ?? [],
@@ -122,8 +134,10 @@ const chartOption = computed<EChartsOption>(() => ({
     <div class="flex min-h-0 flex-1 flex-col items-center gap-3 lg:flex-row">
       <!-- On-time donut with a compact legend (aggregate, no teacher names) -->
       <div class="flex min-h-[180px] w-full flex-1 items-center gap-2 lg:h-full lg:min-h-0">
-        <div class="h-full min-h-[160px] flex-1 lg:min-h-0">
-          <BaseChart :option="punctualityOption" height="100%" />
+        <div class="flex h-full min-h-[160px] flex-1 items-center justify-center lg:min-h-0">
+          <div :ref="setDonutEl" class="donut-box">
+            <BaseChart :option="punctualityOption" height="100%" />
+          </div>
         </div>
         <div class="flex flex-col justify-center gap-3 pr-1">
           <div class="pt-row">
@@ -156,13 +170,22 @@ const chartOption = computed<EChartsOption>(() => ({
 </template>
 
 <style scoped>
+/* Keep the donut a centered square so its ring band stays consistent. */
+.donut-box {
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
 /* Punctuality legend rows beside the donut */
 .pt-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  font-size: 15px;
+  font-size: calc(15px * var(--mscale, 1));
 }
 .pt-label {
   display: inline-flex;

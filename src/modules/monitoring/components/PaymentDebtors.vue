@@ -5,12 +5,16 @@ import { storeToRefs } from 'pinia'
 import { UserRound } from 'lucide-vue-next'
 import { useAppStore } from '@/core/stores/app.store'
 import { formatSpaced } from '@/core/utils/format'
+import { useMonitorScale } from '../composables/useMonitorScale'
 import { M } from '../palette'
 import type { DebtorStudent } from '../types/monitoring.types'
 
 const props = defineProps<{ items: DebtorStudent[]; contract: number }>()
 const { t } = useI18n()
 const { theme } = storeToRefs(useAppStore())
+
+const { scale } = useMonitorScale()
+const iconSize = computed(() => Math.round(24 * scale.value))
 
 // Dark blue name on light, soft blue on dark.
 const nameColor = computed(() => (theme.value === 'dark' ? '#bfdbfe' : '#1e40af'))
@@ -36,7 +40,7 @@ const paidPercent = (s: DebtorStudent) => Math.round(s.paidPct * 100)
     >
       <div class="main">
         <span class="avatar">
-          <el-icon :size="24"><UserRound /></el-icon>
+          <el-icon :size="iconSize"><UserRound /></el-icon>
         </span>
 
         <span class="info">
@@ -100,8 +104,8 @@ const paidPercent = (s: DebtorStudent) => Math.round(s.paidPct * 100)
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 56px;
+  width: calc(48px * var(--mscale, 1));
+  height: calc(56px * var(--mscale, 1));
   flex-shrink: 0;
   border-radius: 11px;
   color: #fff;
@@ -117,7 +121,7 @@ const paidPercent = (s: DebtorStudent) => Math.round(s.paidPct * 100)
   flex: 1;
 }
 .name {
-  font-size: 14px;
+  font-size: calc(14px * var(--mscale, 1));
   font-weight: 700;
   line-height: 1.15;
   white-space: nowrap;
@@ -125,7 +129,7 @@ const paidPercent = (s: DebtorStudent) => Math.round(s.paidPct * 100)
   text-overflow: ellipsis;
 }
 .group {
-  font-size: 12px;
+  font-size: calc(12px * var(--mscale, 1));
   line-height: 1.1;
   color: var(--el-text-color-secondary);
   white-space: nowrap;
@@ -158,15 +162,15 @@ const paidPercent = (s: DebtorStudent) => Math.round(s.paidPct * 100)
   align-items: center;
   justify-content: center;
   gap: 1px;
-  flex: 0 0 120px;
-  width: 120px;
+  flex: 0 0 calc(120px * var(--mscale, 1));
+  width: calc(120px * var(--mscale, 1));
   padding: 8px 12px;
   text-align: center;
   border-left: 1px solid color-mix(in srgb, #3b82f6 26%, var(--el-border-color));
   background: color-mix(in srgb, #3b82f6 15%, var(--el-bg-color));
 }
 .debt {
-  font-size: 19px;
+  font-size: calc(19px * var(--mscale, 1));
   font-weight: 800;
   line-height: 1.1;
   color: v-bind('M.rose');
@@ -174,7 +178,7 @@ const paidPercent = (s: DebtorStudent) => Math.round(s.paidPct * 100)
   white-space: nowrap;
 }
 .paid {
-  font-size: 13px;
+  font-size: calc(13px * var(--mscale, 1));
   font-weight: 700;
   color: var(--el-text-color-primary);
   white-space: nowrap;

@@ -6,6 +6,7 @@ import { CalendarCheck, Users, UserCheck, TrendingUp, TrendingDown } from 'lucid
 import BaseChart from '@/core/components/BaseChart.vue'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
+import { useMonitorScale } from '../composables/useMonitorScale'
 import { M } from '../palette'
 import type { AttendanceBlock, AttendanceRange } from '../types/monitoring.types'
 
@@ -13,6 +14,8 @@ const props = defineProps<{ data: AttendanceBlock | null }>()
 const range = defineModel<AttendanceRange>('range', { required: true })
 
 const { t, te } = useI18n()
+const { scale } = useMonitorScale()
+const fs = (n: number) => Math.round(n * scale.value)
 
 const ranges: AttendanceRange[] = ['week', 'month', 'semester']
 
@@ -40,7 +43,7 @@ const chartOption = computed<EChartsOption>(() => ({
         show: true,
         position: 'top',
         formatter: '{c}%',
-        fontSize: 13,
+        fontSize: fs(13),
         fontWeight: 700,
         color: 'inherit',
       },

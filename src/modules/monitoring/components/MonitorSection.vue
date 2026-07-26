@@ -2,6 +2,7 @@
 import { computed, type Component } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '@/core/stores/app.store'
+import { useMonitorScale } from '../composables/useMonitorScale'
 
 defineProps<{
   title: string
@@ -12,6 +13,9 @@ defineProps<{
 const { theme } = storeToRefs(useAppStore())
 // Unified title+icon colour: dark blue on light, whitish blue on dark.
 const headColor = computed(() => (theme.value === 'dark' ? '#dbeafe' : '#1e40af'))
+
+const { scale } = useMonitorScale()
+const iconSize = computed(() => Math.round(24 * scale.value))
 </script>
 
 <template>
@@ -19,9 +23,9 @@ const headColor = computed(() => (theme.value === 'dark' ? '#dbeafe' : '#1e40af'
     <header class="flex min-h-[50px] shrink-0 flex-wrap items-center justify-between gap-x-2 gap-y-1 px-4 py-1.5 lg:h-[50px] lg:flex-nowrap lg:py-0">
       <div class="section-head flex items-center gap-2.5" :style="{ color: headColor }">
         <span v-if="icon" class="section-icon flex items-center justify-center">
-          <el-icon :size="24"><component :is="icon" /></el-icon>
+          <el-icon :size="iconSize"><component :is="icon" /></el-icon>
         </span>
-        <h2 class="m-0 text-lg font-bold uppercase tracking-wide">{{ title }}</h2>
+        <h2 class="section-title m-0 font-bold uppercase tracking-wide">{{ title }}</h2>
       </div>
       <div class="shrink-0">
         <slot name="toolbar" />
@@ -48,6 +52,9 @@ const headColor = computed(() => (theme.value === 'dark' ? '#dbeafe' : '#1e40af'
 }
 .monitor-section header {
   border-bottom: 1px solid var(--el-border-color-lighter);
+}
+.section-title {
+  font-size: calc(18px * var(--mscale, 1));
 }
 /* Title + icon colour set inline (theme-aware); icon inherits currentColor */
 .section-icon :deep(svg) {

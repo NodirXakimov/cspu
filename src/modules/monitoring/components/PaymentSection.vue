@@ -12,6 +12,7 @@ import MonitorStat from './MonitorStat.vue'
 import PaymentDebtors from './PaymentDebtors.vue'
 import { CONTRACT_FEE } from '../services/monitoring.service'
 import { usePaymentCarousel } from '../composables/usePaymentCarousel'
+import { useElementSize } from '../composables/useElementSize'
 import { M } from '../palette'
 import type { DebtorStudent, PaymentBlock } from '../types/monitoring.types'
 
@@ -50,6 +51,14 @@ function money(v: number | undefined | null): string {
   return formatSpaced(v)
 }
 
+// Size the donut's center text from its real rendered width, so it always fits
+// the ring hole (viewport scaling alone can't know the donut's px size).
+const { setEl: setDonutEl, width: donutW } = useElementSize()
+const dw = computed(() => donutW.value || 180)
+const titleFs = computed(() => Math.max(12, Math.round(dw.value * 0.115)))
+const subFs = computed(() => Math.max(6, Math.round(dw.value * 0.036)))
+const sliceFs = computed(() => Math.max(9, Math.round(dw.value * 0.05)))
+
 const rate = computed(() =>
   props.data && props.data.totalStudents
     ? Math.round((props.data.paid / props.data.totalStudents) * 100)
@@ -64,13 +73,13 @@ const chartOption = computed<EChartsOption>(() => ({
     left: 'center',
     top: 'center',
     itemGap: 2,
-    textStyle: { fontSize: 30, fontWeight: 800, color: M.emerald },
-    subtextStyle: { fontSize: 14 },
+    textStyle: { fontSize: titleFs.value, fontWeight: 800, color: M.emerald },
+    subtextStyle: { fontSize: subFs.value },
   },
   series: [
     {
       type: 'pie',
-      radius: ['48%', '84%'],
+      radius: ['46%', '84%'],
       center: ['50%', '50%'],
       itemStyle: { borderRadius: 10, borderColor: gap.value, borderWidth: 4 },
       label: {
@@ -78,7 +87,7 @@ const chartOption = computed<EChartsOption>(() => ({
         position: 'inside',
         formatter: '{d}%',
         color: '#fff',
-        fontSize: 16,
+        fontSize: sliceFs.value,
         fontWeight: 700,
       },
       emphasis: { scale: true, scaleSize: 6 },
@@ -143,8 +152,10 @@ const chartOption = computed<EChartsOption>(() => ({
 
         <!-- donut + money summary — stacked below lg, side by side on lg -->
         <div class="flex min-h-0 flex-1 flex-col items-center gap-2 lg:flex-row">
-          <div class="min-h-[200px] w-full flex-1 lg:h-full lg:min-h-0">
-            <BaseChart :option="chartOption" height="100%" />
+          <div class="flex min-h-[200px] w-full flex-1 items-center justify-center lg:h-full lg:min-h-0">
+            <div :ref="setDonutEl" class="donut-box">
+              <BaseChart :option="chartOption" height="100%" />
+            </div>
           </div>
 
           <div class="flex w-full flex-1 flex-col justify-center gap-3 pr-1 lg:w-auto" :style="{ color: textColor }">
@@ -256,6 +267,16 @@ const chartOption = computed<EChartsOption>(() => ({
   color: var(--el-color-primary);
 }
 
+/* Keep the donut a centered square so the ring band stays consistent
+   regardless of the (wide-and-short vs tall) container it sits in. */
+.donut-box {
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
 /* Carousel: slide-x + fade between the two views */
 .view {
   width: 100%;
@@ -290,7 +311,7 @@ const chartOption = computed<EChartsOption>(() => ({
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-size: 15px;
+  font-size: calc(15px * var(--mscale, 1));
 }
 .money-label {
   display: inline-flex;

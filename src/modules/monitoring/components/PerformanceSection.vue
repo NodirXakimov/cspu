@@ -6,6 +6,7 @@ import { Trophy, Star, ClipboardCheck, CircleX } from 'lucide-vue-next'
 import BaseChart from '@/core/components/BaseChart.vue'
 import MonitorSection from './MonitorSection.vue'
 import MonitorStat from './MonitorStat.vue'
+import { useMonitorScale } from '../composables/useMonitorScale'
 import { M } from '../palette'
 import type { PerformanceBlock } from '../types/monitoring.types'
 import type { PerformanceTerm } from '../services/monitoring.service'
@@ -17,6 +18,8 @@ const props = defineProps<{
 const term = defineModel<PerformanceTerm>('term', { required: true })
 
 const { t } = useI18n()
+const { scale } = useMonitorScale()
+const fs = (n: number) => Math.round(n * scale.value)
 
 /** Cool vertical gradient — cyan → indigo → violet (keeps the section's violet identity). */
 const BAR_GRADIENT = {
@@ -46,7 +49,7 @@ const chartOption = computed<EChartsOption>(() => ({
         show: true,
         position: 'top',
         fontWeight: 700,
-        fontSize: 15,
+        fontSize: fs(15),
         color: 'inherit',
       },
       data: props.data?.distribution.map((d) => d.value) ?? [],

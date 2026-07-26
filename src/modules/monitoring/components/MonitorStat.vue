@@ -38,7 +38,7 @@ const text = computed(() => {
 
 <template>
   <div
-    class="monitor-stat relative flex flex-1 flex-col justify-center gap-1.5 overflow-hidden rounded-xl px-4 py-5"
+    class="monitor-stat relative flex flex-1 flex-col justify-center gap-1.5 overflow-hidden rounded-xl"
     :style="{ '--accent': accent }"
   >
     <!-- faded watermark icon, right side -->
@@ -46,10 +46,10 @@ const text = computed(() => {
       <component :is="icon" />
     </el-icon>
 
-    <span class="relative text-xs font-semibold uppercase tracking-wide text-[var(--el-text-color-secondary)]">
+    <span class="stat-label relative font-semibold uppercase tracking-wide text-[var(--el-text-color-secondary)]">
       {{ label }}
     </span>
-    <span class="relative text-3xl font-extrabold leading-none tabular-nums" :style="{ color: accent }">
+    <span class="stat-value relative font-extrabold leading-none tabular-nums" :style="{ color: accent }">
       {{ text }}
     </span>
     <slot />
@@ -62,13 +62,20 @@ const text = computed(() => {
   border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
   border-left: 4px solid var(--accent);
   min-width: 0;
+  padding: calc(20px * var(--mscale, 1)) calc(16px * var(--mscale, 1));
+}
+.stat-label {
+  font-size: calc(13px * var(--mscale, 1));
+}
+.stat-value {
+  font-size: calc(30px * var(--mscale, 1));
 }
 .stat-watermark {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 64px;
+  font-size: calc(58px * var(--mscale, 1));
   opacity: 0.5;
   pointer-events: none;
 }

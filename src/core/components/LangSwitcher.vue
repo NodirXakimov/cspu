@@ -38,12 +38,12 @@ function onSelect(key: string | number | object) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
+  padding: calc(6px * var(--mscale, 1)) calc(10px * var(--mscale, 1));
   border: none;
   border-radius: 10px;
   background: transparent;
   color: var(--el-text-color-primary);
-  font-size: 13px;
+  font-size: calc(13px * var(--mscale, 1));
   cursor: pointer;
   transition:
     background-color 0.18s ease,

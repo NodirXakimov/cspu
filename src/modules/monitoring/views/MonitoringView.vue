@@ -15,6 +15,7 @@ import LangSwitcher from '@/core/components/LangSwitcher.vue'
 import { useAppStore } from '@/core/stores/app.store'
 import { useAuthStore } from '@/modules/auth/stores/auth.store'
 import { useMonitoring } from '../composables/useMonitoring'
+import { useMonitorScale } from '../composables/useMonitorScale'
 import TeacherDisciplineSection from '../components/TeacherDisciplineSection.vue'
 import AttendanceSection from '../components/AttendanceSection.vue'
 import PaymentSection from '../components/PaymentSection.vue'
@@ -25,6 +26,10 @@ const { t, te } = useI18n()
 const { locale } = storeToRefs(useAppStore())
 // Hydrated from localStorage when the store is created — no request needed here.
 const { isAuthenticated } = storeToRefs(useAuthStore())
+
+// Viewport-relative interior scale, published as --mscale for all descendants.
+const { scale } = useMonitorScale()
+const hs = (n: number) => Math.round(n * scale.value)
 
 const {
   teacher,
@@ -89,7 +94,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="monitoring-page flex min-h-[100dvh] w-full flex-col gap-3 overflow-y-auto p-2 sm:p-3 [@media(min-width:1024px)_and_(min-height:800px)]:h-screen [@media(min-width:1024px)_and_(min-height:800px)]:overflow-hidden">
+  <div
+    class="monitoring-page flex min-h-[100dvh] w-full flex-col gap-3 overflow-y-auto p-2 sm:p-3 [@media(min-width:1024px)_and_(min-height:800px)]:h-screen [@media(min-width:1024px)_and_(min-height:800px)]:overflow-hidden"
+    :style="{ '--mscale': scale }"
+  >
     <!-- Top control row (above all cards) -->
     <header class="flex shrink-0 flex-wrap items-center justify-between gap-2 sm:gap-3">
       <!-- Global faculty filter (applies to all four cards) -->
@@ -100,7 +108,7 @@ onUnmounted(() => {
           class="faculty-filter__select"
         >
           <template #prefix>
-            <el-icon :size="18" class="faculty-filter__icon"><Building2 /></el-icon>
+            <el-icon :size="hs(18)" class="faculty-filter__icon"><Building2 /></el-icon>
           </template>
           <el-option
             v-for="opt in facultySelectOptions"
@@ -113,7 +121,7 @@ onUnmounted(() => {
 
       <!-- Controls -->
       <div class="ctrl-pill control-bar ml-auto">
-        <span class="hidden items-center gap-2 pl-1 pr-1 text-xs font-medium text-[var(--el-text-color-secondary)] sm:flex">
+        <span class="updated-text hidden items-center gap-2 pl-1 pr-1 font-medium text-[var(--el-text-color-secondary)] sm:flex">
           <span class="live-dot" />
           {{ t('monitoring.updated') }} {{ updatedLabel }}
         </span>
@@ -123,7 +131,7 @@ onUnmounted(() => {
         <ThemeToggle />
         <el-tooltip :content="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'" placement="bottom">
           <button class="ctrl-btn" @click="toggleFullscreen">
-            <el-icon :size="18">
+            <el-icon :size="hs(18)">
               <Minimize v-if="isFullscreen" />
               <Maximize v-else />
             </el-icon>
@@ -133,7 +141,7 @@ onUnmounted(() => {
         <template v-if="!isFullscreen">
           <span class="cluster-divider" />
           <button class="enter-btn" @click="enter">
-            <el-icon :size="17">
+            <el-icon :size="hs(17)">
               <LayoutDashboard v-if="isAuthenticated" />
               <LogIn v-else />
             </el-icon>
@@ -163,11 +171,14 @@ onUnmounted(() => {
 .ctrl-pill {
   display: flex;
   align-items: center;
-  height: 44px;
+  height: calc(44px * var(--mscale, 1));
   border-radius: 12px;
   background: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
   box-shadow: 0 2px 6px -3px rgba(0, 0, 0, 0.2);
+}
+.updated-text {
+  font-size: calc(12px * var(--mscale, 1));
 }
 
 .faculty-filter {
@@ -180,10 +191,11 @@ onUnmounted(() => {
 }
 .faculty-filter__select {
   width: 100%;
+  font-size: calc(14px * var(--mscale, 1));
 }
 @media (min-width: 640px) {
   .faculty-filter__select {
-    width: 220px;
+    width: calc(220px * var(--mscale, 1));
   }
 }
 /* Strip the inner select's own box; inner padding lives here so the popper
@@ -209,8 +221,8 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: calc(34px * var(--mscale, 1));
+  height: calc(34px * var(--mscale, 1));
   border: none;
   border-radius: 10px;
   background: transparent;
@@ -226,7 +238,7 @@ onUnmounted(() => {
 }
 .cluster-divider {
   width: 1px;
-  height: 20px;
+  height: calc(20px * var(--mscale, 1));
   background: var(--el-border-color);
 }
 
@@ -235,11 +247,11 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  height: 34px;
-  padding: 0 14px;
+  height: calc(34px * var(--mscale, 1));
+  padding: 0 calc(14px * var(--mscale, 1));
   border: none;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: calc(13px * var(--mscale, 1));
   font-weight: 700;
   color: #fff;
   cursor: pointer;
