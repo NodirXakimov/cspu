@@ -71,15 +71,25 @@ const activePath = computed(() => route.path)
 
 /* Rounded, inset menu items with breathing room + subtle outline */
 .app-sidebar :deep(.el-menu-item) {
-  height: 46px;
+  height: auto;
+  min-height: 46px;
   margin: 4px 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
   border-radius: 12px;
   border: 1px solid transparent;
   font-weight: 500;
+  line-height: 1.25;
   transition:
     background-color 0.18s ease,
     color 0.18s ease,
     border-color 0.18s ease;
+}
+/* Let long nav labels wrap instead of truncating */
+.app-sidebar :deep(.el-menu-item span) {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
 }
 .app-sidebar :deep(.el-menu-item:hover) {
   background-color: var(--el-color-primary-light-9);

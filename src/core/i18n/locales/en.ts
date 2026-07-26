@@ -8,6 +8,7 @@ export default {
     attendance: 'Attendance',
     ratings: 'Ratings',
     payments: 'Payments',
+    teachers: 'Teacher discipline',
     faculties: 'Faculties',
   },
   common: {

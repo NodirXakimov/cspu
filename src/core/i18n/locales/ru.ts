@@ -8,6 +8,7 @@ export default {
     attendance: 'Посещаемость',
     ratings: 'Рейтинги',
     payments: 'Платежи',
+    teachers: 'Дисциплина преподавателей',
     faculties: 'Факультеты',
   },
   common: {

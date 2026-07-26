@@ -8,6 +8,7 @@ export default {
     attendance: 'Davomat',
     ratings: 'Reytinglar',
     payments: "To'lovlar",
+    teachers: "O'qituvchilar intizomi",
     faculties: 'Fakultetlar',
   },
   common: {
