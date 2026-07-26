@@ -69,8 +69,8 @@ const updatedLabel = computed(() =>
 
 /** Enter the admin area — signing in first when there is no session. */
 function enter() {
-  if (isAuthenticated.value) router.push('/dashboard')
-  else router.push({ name: 'login', query: { redirect: '/dashboard' } })
+  if (isAuthenticated.value) router.push('/attendance')
+  else router.push({ name: 'login', query: { redirect: '/attendance' } })
 }
 
 // Fullscreen
@@ -145,7 +145,7 @@ onUnmounted(() => {
               <LayoutDashboard v-if="isAuthenticated" />
               <LogIn v-else />
             </el-icon>
-            {{ isAuthenticated ? t('nav.dashboard') : t('auth.signIn') }}
+            {{ isAuthenticated ? t('nav.attendance') : t('auth.signIn') }}
           </button>
         </template>
       </div>

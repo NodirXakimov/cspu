@@ -66,7 +66,7 @@ router.beforeEach(async (to) => {
 
   if (to.meta.public) {
     // Already signed in? Skip the login page.
-    if (to.name === 'login' && auth.isAuthenticated) return { path: '/dashboard' }
+    if (to.name === 'login' && auth.isAuthenticated) return { path: '/attendance' }
     return true
   }
 

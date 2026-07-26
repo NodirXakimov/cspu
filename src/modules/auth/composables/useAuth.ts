@@ -56,7 +56,7 @@ export function useAuth() {
       await router.replace(
         typeof redirect === 'string' && redirect.startsWith('/')
           ? redirect
-          : '/dashboard',
+          : '/attendance',
       )
     } catch (err) {
       store.clear()
