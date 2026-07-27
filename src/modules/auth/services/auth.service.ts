@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ApiError, http } from '@/core/api/client'
 import { rawHttp, refreshTokens } from '@/core/api/session'
+import { MOCK_AUTH, mockLogin, mockMe } from './auth.mock'
 import type {
   LoginPayload,
   LogoutResponse,
@@ -22,11 +23,13 @@ function toApiError(err: unknown): ApiError {
 }
 
 /**
- * Auth calls always hit the real API — they ignore `USE_MOCK` (which only gates
- * the feature modules whose endpoints are not live yet).
+ * Auth calls hit the real API — they ignore `USE_MOCK` (which only gates the
+ * feature modules whose endpoints are not live yet). The one exception is
+ * `VITE_USE_MOCK_AUTH`, a temporary offline sign-in (see `auth.mock.ts`).
  */
 export const authService = {
   async login(payload: LoginPayload): Promise<SessionResponse> {
+    if (MOCK_AUTH) return mockLogin(payload)
     try {
       // rawHttp: no stale Authorization header, no refresh-retry on bad credentials.
       const { data } = await rawHttp.post<SessionResponse>('/auth/login', payload)
@@ -38,15 +41,18 @@ export const authService = {
 
   /** Single-flight refresh; also persists the rotated token pair. */
   refresh(): Promise<string> {
+    if (MOCK_AUTH) return Promise.reject(new ApiError('Mock session', 401))
     return refreshTokens()
   },
 
   async me(): Promise<MeResponse> {
+    if (MOCK_AUTH) return mockMe()
     const { data } = await http.get<MeResponse>('/users/me')
     return data
   },
 
   async logout(refresh_token: string): Promise<LogoutResponse> {
+    if (MOCK_AUTH) return { message: 'ok' }
     const { data } = await http.post<LogoutResponse>('/auth/logout', {
       refresh_token,
     })
